@@ -16,4 +16,4 @@ def get_db():
 @app.get("/")
 def read_root(db: Session = Depends(get_db)):
     # Use the db session to interact with the database
-    pass
+    return {"Hello": "World"}

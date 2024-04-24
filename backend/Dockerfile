@@ -5,10 +5,11 @@ FROM python:3.10-slim-bullseye
 WORKDIR /app
 
 # copy the requirements file
-COPY requirements.txt .
+COPY setup.py .
 
-# install the dependencies
-RUN pip install -r requirements.txt
+# install dependencies
+RUN pip install -e .
+
 
 # copy the content of the local src directory to the working directory
 COPY . .
