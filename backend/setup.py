@@ -9,6 +9,7 @@ setup(
         "psycopg2-binary",
         "pydantic",
         "sqlalchemy",
-        "alembic" "uvicorn",
+        "alembic",
+        "uvicorn",
     ],
 )
