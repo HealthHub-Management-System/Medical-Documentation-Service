@@ -1,6 +1,6 @@
 from pydantic import BaseModel
-from backend.schemas.user import User
-from backend.schemas.doctor import Doctor
+from schemas.user import User
+from schemas.doctor import Doctor
 
 
 class Referral(BaseModel):

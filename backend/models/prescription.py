@@ -1,4 +1,4 @@
-from ..database import Base
+from models.database import Base
 
 from sqlalchemy import Column, Integer, String, ForeignKey
 
@@ -8,5 +8,5 @@ class Prescription(Base):
 
     id = Column(Integer, primary_key=True, index=True)
     doctor_id = Column(Integer, ForeignKey("doctors.id"))
-    patient_id = Column(Integer, ForeignKey("patients.id"))
+    patient_id = Column(Integer, ForeignKey("users.id"))
     description = Column(String)

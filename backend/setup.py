@@ -11,5 +11,6 @@ setup(
         "sqlalchemy",
         "alembic",
         "uvicorn",
+        "python-dotenv",
     ],
 )
