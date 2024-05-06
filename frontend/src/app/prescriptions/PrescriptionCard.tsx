@@ -16,13 +16,13 @@ export const PrescriptionCard: React.FC<PrescriptionCardProps> = ({
           Prescription #{prescription.id}
         </Typography>
         <Typography variant="body1" component="p">
-          Medication: {prescription.doctorId}
+          Doctor ID: {prescription.doctorId}
         </Typography>
         <Typography variant="body1" component="p">
-          Dosage: {prescription.patientId}
+          Patient ID: {prescription.patientId}
         </Typography>
         <Typography variant="body1" component="p">
-          Frequency: {prescription.description}
+          Description: {prescription.description}
         </Typography>
       </CardContent>
     </Card>
