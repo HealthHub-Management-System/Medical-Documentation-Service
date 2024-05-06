@@ -1,7 +1,7 @@
 import { MedicalDocumentation } from "@/src/models/medicalDocumentation";
 import { mockMedicalDocumentationEntries } from "@/src/mocks/mockMedicalDocumentationEntry";
 
-export const medicalDocumentations: MedicalDocumentation[] = [
+export const mockMedicalDocumentations: MedicalDocumentation[] = [
   {
     id: 301,
     patientId: 201,
