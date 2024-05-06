@@ -19,6 +19,7 @@ async def init_db_values(db: Session):
         medical_documentation_entry = MedicalDocumentationEntry(date="2021-01-01", diagnose="Headache", recommendations="Rest", medical_documentation_id=medical_documentation.id)
         db.add(medical_documentation_entry)
         db.commit()
+        db.close()
     
         
 @asynccontextmanager
