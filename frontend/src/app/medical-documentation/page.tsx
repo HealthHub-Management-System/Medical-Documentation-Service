@@ -1,13 +1,7 @@
 import { mockMedicalDocumentations } from "@/src/mocks/mockMedicalDocumentations";
 import { Box, Container, Typography } from "@mui/material";
 import { MedicalDocumentationEntryCard } from "./MedicalDocumentationEntryCard";
-
-const getCurrentUserId = () => {
-  // TODO logic for retrieving userId from probably UserContext?
-  //      Need to be checked how to do it in next.js
-
-  return Math.floor(Math.random() * (207 - 201 + 1)) + 201;
-};
+import { getCurrentUserId } from "@/src/utils/utils";
 
 const getMedicalDocumentation = async (patientId: number) => {
   // TODO logic for fetching this data from the backend
