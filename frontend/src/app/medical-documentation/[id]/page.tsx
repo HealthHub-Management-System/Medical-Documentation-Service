@@ -1,7 +1,8 @@
 import { mockMedicalDocumentations } from "@/src/mocks/mockMedicalDocumentations";
-import { Box, Container, Typography } from "@mui/material";
-import { MedicalDocumentationEntryCard } from "./MedicalDocumentationEntryCard";
+import { Box, Button, Container, Typography } from "@mui/material";
+import { MedicalDocumentationEntryCard } from "../MedicalDocumentationEntryCard";
 import { getCurrentUserId } from "@/src/utils/utils";
+import Link from "next/link";
 
 const getMedicalDocumentation = async (patientId: number) => {
   // TODO logic for fetching this data from the backend
@@ -15,7 +16,13 @@ const getMedicalDocumentation = async (patientId: number) => {
   );
 };
 
-export default async function Page() {
+type MedicalDocumentationProps = {
+  params: {
+    id: number;
+  };
+};
+
+export default async function Page({ params }: MedicalDocumentationProps) {
   const userId = getCurrentUserId();
   const medicalDocumentation = await getMedicalDocumentation(userId);
 
@@ -50,9 +57,16 @@ export default async function Page() {
       <Typography variant="h4">
         Medical documentation for user {userId}
       </Typography>
+
       {medicalDocumentation.medicalDocumentationEntries.map((entry) => {
         return <MedicalDocumentationEntryCard key={entry.id} entry={entry} />;
       })}
+
+      <Button variant="contained">
+        <Link href={`/medical-documentation/${params.id}/entry/new`}>
+          Add new medical documentation entry
+        </Link>
+      </Button>
     </Container>
   );
 }
