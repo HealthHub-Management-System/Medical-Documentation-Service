@@ -28,7 +28,7 @@ async def get_prescription(prescription_id: int, db: Session = Depends(get_db)):
         raise HTTPException(status_code=404, detail="Presription not found")
     return prescription
 
-@router.post("/add-prescription")
+@router.post("/prescription")
 async def add_prescription(prescription: schema.Prescritpion, patient_id = Header(1), doctor_id = Header(1), db: Session = Depends(get_db)):
     entry = model.Prescription(**prescription.model_dump())
     db.add(entry)
@@ -36,7 +36,7 @@ async def add_prescription(prescription: schema.Prescritpion, patient_id = Heade
     return entry
 
 
-@router.delete("/remove-prescription/{prescription_id}")
+@router.delete("/prescription/{prescription_id}")
 async def remove_presription(prescription_id: int, db: Session = Depends(get_db)):
     entry = db.query(model.Prescription).filter(model.Prescription.id == prescription_id).first()
     db.delete(entry)
