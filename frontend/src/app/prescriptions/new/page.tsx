@@ -8,11 +8,7 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
-import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
-import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { Controller, useForm } from "react-hook-form";
-import dayjs from "dayjs";
 import { Prescription, NewPrescriptionForm } from "@/src/models/prescription";
 
 const sendNewPrescription = async (newEntry: Omit<Prescription, "id">) => {
@@ -20,13 +16,7 @@ const sendNewPrescription = async (newEntry: Omit<Prescription, "id">) => {
   // new medical documentation entry
 };
 
-type PrescriptionNewProps = {
-  params: {
-    id: number;
-  };
-};
-
-export default function Page({ params }: PrescriptionNewProps) {
+export default function Page() {
   const { control, handleSubmit } = useForm<NewPrescriptionForm>({});
   return (
     <Container
@@ -39,10 +29,7 @@ export default function Page({ params }: PrescriptionNewProps) {
         height: "100vh",
       }}
     >
-      <Typography variant="h4">
-        Add new medical documentation entry for medical documentation{" "}
-        {params.id}
-      </Typography>
+      <Typography variant="h4">Add new prescription</Typography>
 
       <Card>
         <form
@@ -60,12 +47,36 @@ export default function Page({ params }: PrescriptionNewProps) {
             }}
           >
             <Controller
+              name="doctorId"
+              control={control}
+              render={({ field }) => (
+                <TextField
+                  sx={{ m: 1 }}
+                  label="Doctor"
+                  {...field}
+                  onChange={(diagnose) => field.onChange(diagnose)}
+                />
+              )}
+            />
+            <Controller
+              name="patientId"
+              control={control}
+              render={({ field }) => (
+                <TextField
+                  sx={{ m: 1 }}
+                  label="Patient"
+                  {...field}
+                  onChange={(diagnose) => field.onChange(diagnose)}
+                />
+              )}
+            />
+            <Controller
               name="description"
               control={control}
               render={({ field }) => (
                 <TextField
                   sx={{ m: 1 }}
-                  label="Diagnose"
+                  label="Description"
                   {...field}
                   onChange={(diagnose) => field.onChange(diagnose)}
                 />

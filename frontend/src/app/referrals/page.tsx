@@ -1,6 +1,6 @@
 import { mockReferrals } from "@/src/mocks/mockReferrals";
 import { getCurrentUserId } from "@/src/utils/utils";
-import { Container, Typography } from "@mui/material";
+import { Button, Container, Link, Typography } from "@mui/material";
 import ReferralCard from "./ReferralCard";
 
 const getReferrals = async (patientId: number) => {
@@ -30,6 +30,10 @@ export default async function Page() {
       {referrals.map((referral) => {
         return <ReferralCard key={referral.id} referral={referral} />;
       })}
+
+      <Button sx={{ m: 1 }} variant="contained">
+        <Link href={`/referrals/new`}>Add new referral</Link>
+      </Button>
     </Container>
   );
 }
