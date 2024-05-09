@@ -50,6 +50,8 @@ async def create_medical_documentation_entry(
 @router.delete("/medical_documentation/medical_documentation_entry/{medical_documentation_entry_id}")
 async def delete_medical_documentation_entry(medical_documentation_entry_id: int, db: Session = Depends(get_db)):
     medical_documentation_entry = db.query(models.MedicalDocumentationEntry).filter(models.MedicalDocumentationEntry.id == medical_documentation_entry_id).first()
-    db.delete(medical_documentation_entry)
-    db.commit()
-    return medical_documentation_entry
+    if medical_documentation_entry is not  None:
+        db.delete(medical_documentation_entry)
+        db.commit()
+        return medical_documentation_entry
+    return HTTPException(status_code=404, detail="Entry not found")
