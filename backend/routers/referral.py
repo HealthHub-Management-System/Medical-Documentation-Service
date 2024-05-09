@@ -15,11 +15,8 @@ def get_db():
 
 @router.get("/referrals")
 async def get_prescription(patient_id = Header(1), db: Session = Depends(get_db)):
-    response = db.query(model.Referral).filter(model.Referral.patient_id == patient_id).first()
-    if response is None:
-        raise HTTPException(status_code=404, detail="No referals found for this patient")
-    else:
-        return response
+    response = db.query(model.Referral).filter(model.Referral.patient_id == patient_id).all()
+    return response
     
 @router.get("/referals/{referal_id}")
 async def get_prescription(referal_id: int, db: Session = Depends(get_db)):
@@ -39,6 +36,9 @@ async def add_prescription(referal: schema.Referral, patient_id = Header(1), doc
 @router.delete("/referal/{referal_id}")
 async def remove_presription(referal_id: int, db: Session = Depends(get_db)):
     entry = db.query(model.Referral).filter(model.Referral.id == referal_id).first()
-    db.delete(entry)
-    db.commit()
-    return entry
+    if entry is None:
+        raise HTTPException(status_code=404, detail="Referal not found")
+    else:
+        db.delete(entry)
+        db.commit()
+        return entry
