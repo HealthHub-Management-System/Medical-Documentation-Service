@@ -1,11 +1,21 @@
 import { mockMedicalDocumentations } from "@/src/mocks/mockMedicalDocumentations";
 import { Box, Button, Container, Typography } from "@mui/material";
 import { MedicalDocumentationEntryCard } from "../MedicalDocumentationEntryCard";
-import { getCurrentUserId } from "@/src/utils/utils";
+import { getCurrentUserId, snakeToCamel } from "@/src/utils/utils";
 import Link from "next/link";
+import { MedicalDocumentation } from "@/src/models/medicalDocumentation";
 
 const getMedicalDocumentation = async (patientId: number) => {
-  // TODO logic for fetching this data from the backend
+  const res = await fetch("http://localhost:8000/medical_documentation", {
+    method: "GET",
+    headers: {
+      "user-id": String(patientId),
+    },
+    cache: "no-store",
+  });
+
+  if (res.ok) return snakeToCamel(await res.json()) as MedicalDocumentation;
+  else console.error("Failed to fetch medical documentation:", res.statusText);
 
   return (
     mockMedicalDocumentations

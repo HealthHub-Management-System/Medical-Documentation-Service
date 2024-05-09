@@ -17,12 +17,25 @@ import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { Controller, useForm } from "react-hook-form";
 import dayjs from "dayjs";
+import { camelToSnake, getCurrentUserId } from "@/src/utils/utils";
 
 const sendNewMedicalDocumentationEntry = async (
+  userId: number,
   newEntry: Omit<MedicalDocumentationEntry, "id">
 ) => {
-  // TODO logic for doing HTTP POST request to send
-  // new medical documentation entry
+  const res = await fetch(
+    "http://localhost:8000/medical_documentation/medical_documentation_entry",
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "user-id": String(userId),
+      },
+      body: JSON.stringify(camelToSnake(newEntry)),
+    }
+  );
+
+  return res.ok;
 };
 
 type MedicalDocumentationEntryNewProps = {
@@ -58,9 +71,8 @@ export default function Page({ params }: MedicalDocumentationEntryNewProps) {
         <form
           onSubmit={handleSubmit(async (values) => {
             const { date, ...valuesRest } = values;
-            console.debug({ ...valuesRest, date: date.format("DD/MM/YYYY") });
 
-            await sendNewMedicalDocumentationEntry({
+            await sendNewMedicalDocumentationEntry(getCurrentUserId(), {
               date: date.format("DD-MM-YYYY"),
               ...valuesRest,
             });
@@ -87,7 +99,7 @@ export default function Page({ params }: MedicalDocumentationEntryNewProps) {
               )}
             />
             <Controller
-              name="recommendation"
+              name="recommendations"
               control={control}
               render={({ field }) => (
                 <TextField

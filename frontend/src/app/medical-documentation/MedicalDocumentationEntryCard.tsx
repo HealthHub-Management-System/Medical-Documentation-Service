@@ -20,7 +20,7 @@ export const MedicalDocumentationEntryCard = ({
           Diagnose: {entry.diagnose}
         </Typography>
         <Typography variant="body2">
-          Recommendation: {entry.recommendation}
+          Recommendation: {entry.recommendations}
         </Typography>
       </CardContent>
     </Card>
