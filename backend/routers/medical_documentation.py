@@ -39,7 +39,8 @@ async def get_medical_documentation(medical_documentation_entry_id: int, db: Ses
     return medical_documentation
 
 @router.post("/medical_documentation/medical_documentation_entry")
-async def create_medical_documentation_entry(medical_documentation_entry: schemas.MedicalDocumentationEntry, user_id:int = Header(1), db: Session = Depends(get_db)):
+async def create_medical_documentation_entry(
+    medical_documentation_entry: schemas.MedicalDocumentationEntry, user_id:int = Header(1), db: Session = Depends(get_db)):
     medical_documentation =  await create_medical_documentation_if_not_exists(db, user_id)
     entry = models.MedicalDocumentationEntry(**medical_documentation_entry.model_dump(), medical_documentation_id=medical_documentation.id)
     db.add(entry)
