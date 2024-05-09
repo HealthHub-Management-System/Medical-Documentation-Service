@@ -1,6 +1,6 @@
 import { mockPrescriptions } from "@/src/mocks/mockPrescriptions";
 import { getCurrentUserId } from "@/src/utils/utils";
-import { Container, Typography } from "@mui/material";
+import { Button, Container, Link, Typography } from "@mui/material";
 import { PrescriptionCard } from "./PrescriptionCard";
 
 const getPrescriptions = async (patientId: number) => {
@@ -34,6 +34,10 @@ export default async function Page() {
           <PrescriptionCard key={prescription.id} prescription={prescription} />
         );
       })}
+
+      <Button sx={{ m: 1 }} variant="contained">
+        <Link href={`/prescriptions/new`}>Add new prescription</Link>
+      </Button>
     </Container>
   );
 }
