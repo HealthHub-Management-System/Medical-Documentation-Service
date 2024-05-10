@@ -10,10 +10,23 @@ import {
 } from "@mui/material";
 import { Controller, useForm } from "react-hook-form";
 import { NewReferralForm, Referral } from "@/src/models/referral";
+import { camelToSnake, getCurrentUserId } from "@/src/utils/utils";
 
-const sendNewPrescription = async (newEntry: Omit<Referral, "id">) => {
-  // TODO logic for doing HTTP POST request to send
-  // new medical documentation entry
+const sendNewPrescription = async (
+  userId: number,
+  newReferral: Omit<Referral, "id">
+) => {
+  const res = await fetch("http://localhost:8000/referal", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "patient-id": String(newReferral.patientId),
+      "doctor-id": String(newReferral.doctorId),
+    },
+    body: JSON.stringify(camelToSnake(newReferral)),
+  });
+
+  return res.ok;
 };
 
 export default function Page() {
@@ -35,7 +48,7 @@ export default function Page() {
         <form
           onSubmit={handleSubmit(async (values) => {
             console.debug(values);
-            await sendNewPrescription(values);
+            await sendNewPrescription(getCurrentUserId(), values);
           })}
         >
           <CardContent
