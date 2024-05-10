@@ -1,9 +1,9 @@
 import { mockPrescriptions } from "@/src/mocks/mockPrescriptions";
 import { getCurrentUserId, snakeToCamel } from "@/src/utils/utils";
-import { Button, Container, Typography } from "@mui/material";
-import Link from "next/link";
+import { Container, Typography } from "@mui/material";
 import { PrescriptionCard } from "./PrescriptionCard";
 import { Prescription } from "@/src/models/prescription";
+import { LinkButton } from "../components/LinkButton";
 
 const getPrescriptions = async (patientId: number) => {
   const res = await fetch("http://localhost:8000/prescriptions", {
@@ -46,9 +46,9 @@ export default async function Page() {
         );
       })}
 
-      <Button sx={{ m: 1 }} variant="contained">
-        <Link href={`/prescriptions/new`}>Add new prescription</Link>
-      </Button>
+      <LinkButton linkProps={{ href: `/prescriptions/new` }}>
+        Add new prescription
+      </LinkButton>
     </Container>
   );
 }

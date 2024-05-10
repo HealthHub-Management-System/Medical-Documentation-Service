@@ -1,9 +1,9 @@
 import { mockReferrals } from "@/src/mocks/mockReferrals";
 import { getCurrentUserId, snakeToCamel } from "@/src/utils/utils";
-import { Button, Container, Typography } from "@mui/material";
-import Link from "next/link";
+import { Container, Typography } from "@mui/material";
 import ReferralCard from "./ReferralCard";
 import { Referral } from "@/src/models/referral";
+import { LinkButton } from "../components/LinkButton";
 
 const getReferrals = async (patientId: number) => {
   const res = await fetch("http://localhost:8000/referrals", {
@@ -42,9 +42,9 @@ export default async function Page() {
         return <ReferralCard key={referral.id} referral={referral} />;
       })}
 
-      <Button sx={{ m: 1 }} variant="contained">
-        <Link href={`/referrals/new`}>Add new referral</Link>
-      </Button>
+      <LinkButton linkProps={{ href: `/referrals/new` }}>
+        Add new referral
+      </LinkButton>
     </Container>
   );
 }
