@@ -1,10 +1,21 @@
 import { mockPrescriptions } from "@/src/mocks/mockPrescriptions";
-import { getCurrentUserId } from "@/src/utils/utils";
-import { Button, Container, Link, Typography } from "@mui/material";
+import { getCurrentUserId, snakeToCamel } from "@/src/utils/utils";
+import { Button, Container, Typography } from "@mui/material";
+import Link from "next/link";
 import { PrescriptionCard } from "./PrescriptionCard";
+import { Prescription } from "@/src/models/prescription";
 
 const getPrescriptions = async (patientId: number) => {
-  // TODO logic for fetching this data from the backend
+  const res = await fetch("http://localhost:8000/prescriptions", {
+    headers: {
+      "patient-id": String(patientId),
+    },
+    method: "GET",
+    cache: "no-store",
+  });
+
+  if (res.ok) return snakeToCamel(await res.json()) as Prescription[];
+  else console.error("Failed to fetch prescriptions:", res.statusText);
 
   return (
     mockPrescriptions.filter(
@@ -15,7 +26,7 @@ const getPrescriptions = async (patientId: number) => {
 
 export default async function Page() {
   const userId = getCurrentUserId();
-  const prescriptions = await getPrescriptions(userId);
+  const prescriptions = await getPrescriptions(1);
 
   return (
     <Container
