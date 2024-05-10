@@ -6,13 +6,16 @@ import { Prescription } from "@/src/models/prescription";
 import { LinkButton } from "../components/LinkButton";
 
 const getPrescriptions = async (patientId: number) => {
-  const res = await fetch("http://localhost:8000/prescriptions", {
-    headers: {
-      "patient-id": String(patientId),
-    },
-    method: "GET",
-    cache: "no-store",
-  });
+  const res = await fetch(
+    `http://localhost:8000/prescriptions?` +
+      new URLSearchParams({
+        patient_id: String(patientId),
+      }),
+    {
+      method: "GET",
+      cache: "no-store",
+    }
+  );
 
   if (res.ok) return snakeToCamel(await res.json()) as Prescription[];
   else console.error("Failed to fetch prescriptions:", res.statusText);

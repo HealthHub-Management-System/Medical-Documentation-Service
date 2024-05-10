@@ -6,13 +6,16 @@ import { Referral } from "@/src/models/referral";
 import { LinkButton } from "../components/LinkButton";
 
 const getReferrals = async (patientId: number) => {
-  const res = await fetch("http://localhost:8000/referrals", {
-    headers: {
-      "patient-id": String(patientId),
-    },
-    method: "GET",
-    cache: "no-store",
-  });
+  const res = await fetch(
+    `http://localhost:8000/referrals?` +
+      new URLSearchParams({
+        patient_id: String(patientId),
+      }),
+    {
+      method: "GET",
+      cache: "no-store",
+    }
+  );
 
   if (res.ok) return snakeToCamel(await res.json()) as Referral[];
   else console.error("Failed to fetch referrals:", res.statusText);
