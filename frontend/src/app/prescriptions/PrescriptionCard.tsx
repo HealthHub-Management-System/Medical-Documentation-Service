@@ -10,7 +10,7 @@ export const PrescriptionCard: React.FC<PrescriptionCardProps> = ({
   prescription,
 }) => {
   return (
-    <Card sx={{ mt: 1 }} className="prescription-card">
+    <Card sx={{ m: 1, width: "100%" }} className="prescription-card">
       <CardContent>
         <Typography variant="h5" component="h2">
           Prescription #{prescription.id}

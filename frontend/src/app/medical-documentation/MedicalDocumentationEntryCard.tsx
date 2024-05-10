@@ -7,7 +7,7 @@ export const MedicalDocumentationEntryCard = ({
   entry,
 }: MedicalDocumentationEntryCardProps) => {
   return (
-    <Card>
+    <Card sx={{ m: 1, width: "100%" }}>
       <CardContent>
         <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
           ID: {entry.id} related to medical documentation ID:{" "}

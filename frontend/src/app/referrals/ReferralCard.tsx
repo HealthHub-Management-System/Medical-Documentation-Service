@@ -8,7 +8,7 @@ interface ReferralCardProps {
 
 const ReferralCard: React.FC<ReferralCardProps> = ({ referral }) => {
   return (
-    <Card sx={{ mt: 1 }}>
+    <Card sx={{ m: 1, width: "100%" }}>
       <CardContent>
         <Typography variant="h5" component="h2">
           Referral #{referral.id}
