@@ -16,7 +16,7 @@ const sendNewPrescription = async (
   userId: number,
   newReferral: Omit<Referral, "id">
 ) => {
-  const res = await fetch("http://localhost:8000/referal", {
+  const res = await fetch("http://localhost:8000/referral", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
