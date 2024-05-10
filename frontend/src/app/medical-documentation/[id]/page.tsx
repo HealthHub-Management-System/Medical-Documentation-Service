@@ -6,13 +6,16 @@ import Link from "next/link";
 import { MedicalDocumentation } from "@/src/models/medicalDocumentation";
 
 const getMedicalDocumentation = async (patientId: number) => {
-  const res = await fetch("http://localhost:8000/medical_documentation", {
-    method: "GET",
-    headers: {
-      "user-id": String(patientId),
-    },
-    cache: "no-store",
-  });
+  const res = await fetch(
+    "http://localhost:8000/medical_documentation" +
+      new URLSearchParams({
+        user_id: String(patientId),
+      }),
+    {
+      method: "GET",
+      cache: "no-store",
+    }
+  );
 
   if (res.ok) return snakeToCamel(await res.json()) as MedicalDocumentation;
   else console.error("Failed to fetch medical documentation:", res.statusText);
