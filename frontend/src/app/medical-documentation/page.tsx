@@ -1,13 +1,13 @@
 import { mockMedicalDocumentations } from "@/src/mocks/mockMedicalDocumentations";
-import { Box, Button, Container, Typography } from "@mui/material";
-import { MedicalDocumentationEntryCard } from "../MedicalDocumentationEntryCard";
+import { Container, Typography } from "@mui/material";
+import { MedicalDocumentationEntryCard } from "./MedicalDocumentationEntryCard";
 import { getCurrentUserId, snakeToCamel } from "@/src/utils/utils";
-import Link from "next/link";
 import { MedicalDocumentation } from "@/src/models/medicalDocumentation";
+import { LinkButton } from "../components/LinkButton";
 
 const getMedicalDocumentation = async (patientId: number) => {
   const res = await fetch(
-    "http://localhost:8000/medical_documentation" +
+    `http://localhost:8000/medical_documentation?` +
       new URLSearchParams({
         user_id: String(patientId),
       }),
@@ -29,13 +29,13 @@ const getMedicalDocumentation = async (patientId: number) => {
   );
 };
 
-type MedicalDocumentationProps = {
-  params: {
-    id: number;
-  };
-};
+// type MedicalDocumentationProps = {
+//   params: {
+//     id: number;
+//   };
+// };
 
-export default async function Page({ params }: MedicalDocumentationProps) {
+export default async function Page() {
   const userId = getCurrentUserId();
   const medicalDocumentation = await getMedicalDocumentation(userId);
 
@@ -75,11 +75,13 @@ export default async function Page({ params }: MedicalDocumentationProps) {
         return <MedicalDocumentationEntryCard key={entry.id} entry={entry} />;
       })}
 
-      <Button variant="contained">
-        <Link href={`/medical-documentation/${params.id}/entry/new`}>
-          Add new medical documentation entry
-        </Link>
-      </Button>
+      <LinkButton
+        linkProps={{
+          href: `/medical-documentation/${medicalDocumentation.id}/entry/new`,
+        }}
+      >
+        Add new medical documentation entry
+      </LinkButton>
     </Container>
   );
 }
