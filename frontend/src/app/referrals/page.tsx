@@ -1,10 +1,21 @@
 import { mockReferrals } from "@/src/mocks/mockReferrals";
-import { getCurrentUserId } from "@/src/utils/utils";
-import { Button, Container, Link, Typography } from "@mui/material";
+import { getCurrentUserId, snakeToCamel } from "@/src/utils/utils";
+import { Button, Container, Typography } from "@mui/material";
+import Link from "next/link";
 import ReferralCard from "./ReferralCard";
+import { Referral } from "@/src/models/referral";
 
 const getReferrals = async (patientId: number) => {
-  // TODO logic for fetching this data from the backend
+  const res = await fetch("http://localhost:8000/referrals", {
+    headers: {
+      "patient-id": String(patientId),
+    },
+    method: "GET",
+    cache: "no-store",
+  });
+
+  if (res.ok) return snakeToCamel(await res.json()) as Referral[];
+  else console.error("Failed to fetch referrals:", res.statusText);
 
   return (
     mockReferrals.filter((referral) => referral.patientId === patientId) ?? null
