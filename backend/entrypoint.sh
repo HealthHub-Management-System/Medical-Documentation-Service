@@ -5,7 +5,7 @@ while ! pg_isready -h "postgres" -U "user" -q; do
   sleep 1
 done
 
-alembic revision --autogenerate -m "new migration"
+alembic revision --autogenerate -m "Update model"
 
 alembic upgrade head
 

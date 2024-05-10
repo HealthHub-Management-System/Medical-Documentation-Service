@@ -1,7 +1,7 @@
 from pydantic import BaseModel
+from typing import List
 
-
-class MedicalDocumentation(BaseModel):
+class MedicalDocumentationEntry(BaseModel):
     """Class represents the schema of a medical documentation.
 
     Attributes:
@@ -16,3 +16,22 @@ class MedicalDocumentation(BaseModel):
 
     class Config:
         orm_mode = True
+
+class MedicalDocumentation(BaseModel):
+    """Class represents the schema of a medical documentation.
+
+    Attributes:
+        id: ID of the medical documentation.
+        patient_id: ID of the patient.
+        medical_documentation_entries: List of medical documentation entries.
+    """
+
+    id: int
+    patient_id: int
+    medical_documentation_entries: List[MedicalDocumentationEntry]
+
+    class Config:
+        orm_mode = True
+
+
+
