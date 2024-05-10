@@ -7,6 +7,7 @@ from models.doctor import Doctor
 from models.prescription import Prescription
 from contextlib import asynccontextmanager
 from routers import medical_documentation, prescription, referral
+from fastapi.middleware.cors import CORSMiddleware
 
         
 async def init_db_values(db: Session):
@@ -45,6 +46,20 @@ async def lifespan(app: FastAPI):
     SessionLocal.close_all()
     
 app = FastAPI(lifespan=lifespan)
+
+origins = [
+    "http://localhost",
+    "http://localhost:3000",
+]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
 app.include_router(medical_documentation.router)
 app.include_router(prescription.router)
 app.include_router(referral.router)
