@@ -37,7 +37,7 @@ async def add_prescription(prescription: schema.Prescritpion, db: Session = Depe
 async def remove_presription(prescription_id: int, db: Session = Depends(get_db)):
     prescription = db.query(model.Prescription).filter(model.Prescription.id == prescription_id).first()
     if prescription is None:
-        raise HTTPException(status_code=404, detail="Referal not found")
+        raise HTTPException(status_code=404, detail="Prescription not found")
     else:
         db.delete(prescription)
         db.commit()
