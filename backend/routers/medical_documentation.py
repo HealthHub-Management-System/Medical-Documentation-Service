@@ -23,7 +23,7 @@ async def create_medical_documentation_if_not_exists(db: Session, user_id: int) 
         
     return medical_documentation
     
-@router.get("/medical_documentation")
+@router.get("/medical-documentations")
 async def get_medical_documentation(user_id: int = Query(None), db: Session = Depends(get_db)):
     if user_id is None:
         raise HTTPException(status_code=400, detail="ID not provided")
@@ -33,14 +33,14 @@ async def get_medical_documentation(user_id: int = Query(None), db: Session = De
     return medical_documentation
     
 
-@router.get("/medical_documentation/{medical_documentation_entry_id}")
+@router.get("/medical-documentations/{medical_documentation_entry_id}")
 async def get_medical_documentation(medical_documentation_entry_id: int, db: Session = Depends(get_db)):
     medical_documentation = db.query(models.MedicalDocumentationEntry).filter(models.MedicalDocumentationEntry.id == medical_documentation_entry_id).first()
     if medical_documentation is None:
         raise HTTPException(status_code=404, detail="Medical Documentation not found")
     return medical_documentation
 
-@router.post("/medical_documentation/medical_documentation_entry")
+@router.post("/medical-documentations/medical-documentation-entries")
 async def create_medical_documentation_entry(medical_documentation_entry: schemas.MedicalDocumentationEntry, user_id:int = Header(None), db: Session = Depends(get_db)):
     medical_documentation =  await create_medical_documentation_if_not_exists(db, user_id)
     entry = models.MedicalDocumentationEntry(**medical_documentation_entry.model_dump(), medical_documentation_id=medical_documentation.id)
@@ -48,7 +48,7 @@ async def create_medical_documentation_entry(medical_documentation_entry: schema
     db.commit()
     return entry   
 
-@router.delete("/medical_documentation/medical_documentation_entry/{medical_documentation_entry_id}")
+@router.delete("/medical-documentations/medical-documentation-entries/{medical_documentation_entry_id}")
 async def delete_medical_documentation_entry(medical_documentation_entry_id: int, db: Session = Depends(get_db)):
     medical_documentation_entry = db.query(models.MedicalDocumentationEntry).filter(models.MedicalDocumentationEntry.id == medical_documentation_entry_id).first()
     if medical_documentation_entry is not  None:
