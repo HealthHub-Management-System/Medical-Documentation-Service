@@ -18,15 +18,12 @@ import { useEffect, useState } from "react";
 import { Drug } from "@/src/models/drug";
 
 const sendNewPrescription = async (
-  userId: string,
   newPrescription: Omit<Prescription, "id">
 ) => {
   const res = await fetch("http://localhost:8003/prescription", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
-      "patient-id": String(newPrescription.patientId),
-      "doctor-id": String(newPrescription.doctorId),
     },
     body: JSON.stringify(camelToSnake(newPrescription)),
   });
@@ -83,7 +80,10 @@ export default function Page() {
           onSubmit={handleSubmit(async (values) => {
             console.debug(values);
             const currentUser = await getCurrentUser(sessionCookie);
-            await sendNewPrescription(currentUser.id, values);
+            if (!currentUser) return;
+
+            const newPrescription = {currentUser.id, values.drugName, values.description} as Omit<Prescription, "id">;
+            await sendNewPrescription(values);
           })}
         >
           <CardContent
@@ -95,20 +95,7 @@ export default function Page() {
             }}
           >
             <Controller
-              name="doctorId"
-              control={control}
-              render={({ field }) => (
-                <TextField
-                  type="number"
-                  sx={{ m: 1, width: 300 }}
-                  label="Doctor"
-                  {...field}
-                  onChange={(e) => field.onChange(e.target.value)}
-                />
-              )}
-            />
-            <Controller
-              name="patientId"
+              name="patientName"
               control={control}
               render={({ field }) => (
                 <TextField

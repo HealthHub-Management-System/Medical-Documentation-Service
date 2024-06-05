@@ -9,8 +9,7 @@ export type Prescription = {
 };
 
 export const NewPrescriptionValidationSchema = z.object({
-  doctorId: z.string(),
-  patientId: z.string(),
+  patientName: z.string(),
   drugName: z.string(),
   description: z.string(),
 });
