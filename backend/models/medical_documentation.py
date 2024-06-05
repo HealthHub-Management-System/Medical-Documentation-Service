@@ -7,7 +7,7 @@ class MedicalDocumentation(Base):
     __tablename__ = "medical_documentation"
 
     id = Column(Integer, primary_key=True, index=True)
-    patient_id = Column(Integer, ForeignKey("users.id"), nullable=False)
+    patient_id = Column(String, ForeignKey("users.id"), nullable=False)
     medical_documentation_entries = relationship("MedicalDocumentationEntry", back_populates="medical_documentation")
 
 
