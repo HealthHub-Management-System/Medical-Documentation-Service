@@ -27,7 +27,7 @@ class MedicalDocumentation(BaseModel):
     """
 
     id: int
-    patient_id: int
+    patient_id: str
     medical_documentation_entries: List[MedicalDocumentationEntry]
 
     class Config:
