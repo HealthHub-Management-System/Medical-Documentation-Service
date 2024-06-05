@@ -14,12 +14,12 @@ def get_db():
         db.close()
 
 @router.get("/referrals")
-async def get_prescription(patient_id: str, db: Session = Depends(get_db)):
+async def get_referrals(patient_id: str, db: Session = Depends(get_db)):
     response = db.query(model.Referral).filter(model.Referral.patient_id == patient_id).all()
     return response
     
 @router.get("/referrals/{referral_id}")
-async def get_prescription(referral_id: int, db: Session = Depends(get_db)):
+async def get_referral(referral_id: int, db: Session = Depends(get_db)):
     referal = db.query(model.Referral).filter(model.Referral.id == referral_id).first()
     if referal is None:
         raise HTTPException(status_code=404, detail="Referral not found")

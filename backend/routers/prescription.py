@@ -28,7 +28,7 @@ async def get_prescription(prescription_id: int, db: Session = Depends(get_db)):
     return prescription
 
 
-@router.post("/prescription")
+@router.post("/prescriptions")
 async def add_prescription(prescription: NewPrescription, db: Session = Depends(get_db)):
     drug_id = db.query(Drug).filter(Drug.name == prescription.drug_name).first().id
     entry = model.Prescription(
