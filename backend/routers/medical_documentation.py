@@ -24,7 +24,7 @@ async def create_medical_documentation_if_not_exists(db: Session, user_id: int) 
     return medical_documentation
     
 @router.get("/medical-documentations")
-async def get_medical_documentation(user_id: int = Query(None), db: Session = Depends(get_db)):
+async def get_medical_documentation(user_id: str = Query(None), db: Session = Depends(get_db)):
     if user_id is None:
         raise HTTPException(status_code=400, detail="ID not provided")
     medical_documentation = db.query(models.MedicalDocumentation).filter(models.MedicalDocumentation.patient_id == user_id).options(joinedload(models.MedicalDocumentation.medical_documentation_entries)).first()

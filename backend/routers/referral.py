@@ -14,7 +14,7 @@ def get_db():
         db.close()
 
 @router.get("/referrals")
-async def get_prescription(patient_id: int, db: Session = Depends(get_db)):
+async def get_prescription(patient_id: str, db: Session = Depends(get_db)):
     response = db.query(model.Referral).filter(model.Referral.patient_id == patient_id).all()
     return response
     
