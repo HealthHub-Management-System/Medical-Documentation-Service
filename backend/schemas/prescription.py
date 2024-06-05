@@ -13,8 +13,8 @@ class Prescritpion(BaseModel):
         description: Descritpion for a prescription (quantity, dosage, etc.).
     """
 
-    patient_id: int
-    doctor_id: int
+    patient_id: str
+    doctor_id: str
     drug_id: int
     description: str
 

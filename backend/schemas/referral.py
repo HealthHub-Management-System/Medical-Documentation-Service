@@ -12,8 +12,8 @@ class Referral(BaseModel):
         description: Descritpion for a referral.
     """
 
-    patient_id: int
-    doctor_id: int
+    patient_id: str
+    doctor_id: str
     description: str
 
     class Config:
