@@ -9,11 +9,13 @@ class Prescritpion(BaseModel):
     Attributes:
         patient: Model of a user.
         doctor: Model of a doctor.
+        drug: Model of a drug.
         description: Descritpion for a prescription (quantity, dosage, etc.).
     """
 
     patient_id: int
     doctor_id: int
+    drug_id: int
     description: str
 
     class Config:
