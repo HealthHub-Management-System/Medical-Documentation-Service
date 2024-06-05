@@ -1,15 +1,16 @@
 import { mockReferrals } from "@/src/mocks/mockReferrals";
-import { getCurrentUserId, snakeToCamel } from "@/src/utils/utils";
+import { getCurrentUser, snakeToCamel } from "@/src/utils/utils";
 import { Container, Typography } from "@mui/material";
 import ReferralCard from "./ReferralCard";
 import { Referral } from "@/src/models/referral";
 import { LinkButton } from "../components/LinkButton";
+import { cookies } from "next/headers";
 
-const getReferrals = async (patientId: number) => {
+const getReferrals = async (patientId: string) => {
   const res = await fetch(
     `http://localhost:8000/referrals?` +
       new URLSearchParams({
-        patient_id: String(patientId),
+        patient_id: patientId,
       }),
     {
       method: "GET",
@@ -26,8 +27,11 @@ const getReferrals = async (patientId: number) => {
 };
 
 export default async function Page() {
-  const userId = getCurrentUserId();
-  const referrals = await getReferrals(userId);
+  const cookieStore = cookies();
+  const sessionCookie = cookieStore.get("session");
+  if (!sessionCookie) return;
+  const currentUser = await getCurrentUser(sessionCookie);
+  const referrals = await getReferrals(currentUser.id);
 
   return (
     <Container
@@ -40,7 +44,9 @@ export default async function Page() {
         height: "100vh",
       }}
     >
-      <Typography variant="h4">Referrals for user {userId}</Typography>
+      <Typography variant="h4">
+        Referrals for user {currentUser.name}
+      </Typography>
       {referrals.map((referral) => {
         return <ReferralCard key={referral.id} referral={referral} />;
       })}

@@ -2,14 +2,14 @@ import { z } from "zod";
 
 export type Referral = {
   id: number;
-  doctorId: number;
-  patientId: number;
+  doctorId: string;
+  patientId: string;
   description: string;
 };
 
 export const NewReferralValidationSchema = z.object({
-  doctorId: z.number(),
-  patientId: z.number(),
+  doctorId: z.string(),
+  patientId: z.string(),
   description: z.string(),
 });
 

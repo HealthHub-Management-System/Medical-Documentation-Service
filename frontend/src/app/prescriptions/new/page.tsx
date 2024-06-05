@@ -12,12 +12,13 @@ import {
 } from "@mui/material";
 import { Controller, useForm } from "react-hook-form";
 import { Prescription, NewPrescriptionForm } from "@/src/models/prescription";
-import { camelToSnake, getCurrentUserId } from "@/src/utils/utils";
+import { camelToSnake, getCurrentUser } from "@/src/utils/utils";
+import { cookies } from "next/headers";
 import { useEffect, useState } from "react";
 import { Drug } from "@/src/models/drug";
 
 const sendNewPrescription = async (
-  userId: number,
+  userId: string,
   newPrescription: Omit<Prescription, "id">
 ) => {
   const res = await fetch("http://localhost:8000/prescription", {
@@ -60,6 +61,10 @@ export default function Page() {
     }
   };
 
+  const cookieStore = cookies();
+  const sessionCookie = cookieStore.get("session");
+  if (!sessionCookie) return;
+
   return (
     <Container
       maxWidth="xl"
@@ -77,7 +82,8 @@ export default function Page() {
         <form
           onSubmit={handleSubmit(async (values) => {
             console.debug(values);
-            await sendNewPrescription(getCurrentUserId(), values);
+            const currentUser = await getCurrentUser(sessionCookie);
+            await sendNewPrescription(currentUser.id, values);
           })}
         >
           <CardContent

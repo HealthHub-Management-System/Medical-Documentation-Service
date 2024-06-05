@@ -2,6 +2,6 @@ import { MedicalDocumentationEntry } from "./medicalDocumentationEntry";
 
 export type MedicalDocumentation = {
   id: number;
-  patientId: number;
+  patientId: string;
   medicalDocumentationEntries: MedicalDocumentationEntry[];
 };
