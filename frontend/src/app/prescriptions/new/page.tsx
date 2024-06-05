@@ -7,10 +7,14 @@ import {
   Container,
   TextField,
   Typography,
+  Autocomplete,
+  Paper,
 } from "@mui/material";
 import { Controller, useForm } from "react-hook-form";
 import { Prescription, NewPrescriptionForm } from "@/src/models/prescription";
 import { camelToSnake, getCurrentUserId } from "@/src/utils/utils";
+import { useEffect, useState } from "react";
+import { Drug } from "@/src/models/drug";
 
 const sendNewPrescription = async (
   userId: number,
@@ -30,7 +34,32 @@ const sendNewPrescription = async (
 };
 
 export default function Page() {
-  const { control, handleSubmit } = useForm<NewPrescriptionForm>({});
+  const { control, handleSubmit, getValues, setError, clearErrors } = useForm<NewPrescriptionForm>({});
+  const [drugSuggestions, setDrugSuggestions] = useState<string[]>([]);
+
+  const fetchDrugSuggestions = async () => {
+    try {
+      const response = await fetch(`http://localhost:8000/drugs?name=${getValues("drugName")}`);
+      if (response.status === 404) {
+        setError("drugName", {
+          type: "manual",
+          message: "Drug not found",
+        });
+        setDrugSuggestions([]);
+      } else {
+        const data = await response.json() as Drug[];
+        const drugNames = data.map((drug) => drug.name);
+        setDrugSuggestions(drugNames);
+        clearErrors("drugName");
+      }
+    } catch (error) {
+      setError("drugName", {
+        type: "manual",
+        message: "Error fetching drugs",
+      });
+    }
+  };
+
   return (
     <Container
       maxWidth="xl"
@@ -64,10 +93,11 @@ export default function Page() {
               control={control}
               render={({ field }) => (
                 <TextField
-                  sx={{ m: 1 }}
+                  type="number"
+                  sx={{ m: 1, width: 300 }}
                   label="Doctor"
                   {...field}
-                  onChange={(diagnose) => field.onChange(diagnose)}
+                  onChange={(e) => field.onChange(e.target.value)}
                 />
               )}
             />
@@ -76,10 +106,36 @@ export default function Page() {
               control={control}
               render={({ field }) => (
                 <TextField
-                  sx={{ m: 1 }}
+                  sx={{ m: 1, width: 300 }}
                   label="Patient"
                   {...field}
-                  onChange={(diagnose) => field.onChange(diagnose)}
+                  onChange={(e) => field.onChange(e.target.value)}
+                />
+              )}
+            />
+            <Controller
+              name="drugName"
+              control={control}
+              render={({ field, fieldState }) => (
+                <Autocomplete
+                  options={drugSuggestions}
+                  sx={{ m: 1, width: 300 }}
+                  renderInput={(params) => (
+                    <TextField 
+                      {...params} 
+                      label="Drug" 
+                      error={!!fieldState.error}
+                      helperText={fieldState.error ? fieldState.error.message : ""}
+                    />
+                  )}
+                  noOptionsText=""
+                  PaperComponent={({ children }) => 
+                    drugSuggestions.length === 0 ? null : <Paper>{children}</Paper>
+                  }
+                  onInputChange={(event, value) => {
+                    field.onChange(value);
+                    fetchDrugSuggestions();
+                  }}
                 />
               )}
             />
@@ -88,10 +144,10 @@ export default function Page() {
               control={control}
               render={({ field }) => (
                 <TextField
-                  sx={{ m: 1 }}
+                  sx={{ m: 1, width: 300 }}
                   label="Description"
                   {...field}
-                  onChange={(diagnose) => field.onChange(diagnose)}
+                  onChange={(e) => field.onChange(e.target.value)}
                 />
               )}
             />
