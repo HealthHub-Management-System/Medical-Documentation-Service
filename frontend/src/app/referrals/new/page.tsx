@@ -10,10 +10,11 @@ import {
 } from "@mui/material";
 import { Controller, useForm } from "react-hook-form";
 import { NewReferralForm, Referral } from "@/src/models/referral";
-import { camelToSnake, getCurrentUserId } from "@/src/utils/utils";
+import { camelToSnake, getCurrentUser } from "@/src/utils/utils";
+import { cookies } from "next/headers";
 
 const sendNewPrescription = async (
-  userId: number,
+  userId: string,
   newReferral: Omit<Referral, "id">
 ) => {
   const res = await fetch("http://localhost:8000/referral", {
@@ -31,6 +32,9 @@ const sendNewPrescription = async (
 
 export default function Page() {
   const { control, handleSubmit } = useForm<NewReferralForm>({});
+  const cookieStore = cookies();
+  const sessionCookie = cookieStore.get("session");
+  if (!sessionCookie) return;
   return (
     <Container
       maxWidth="xl"
@@ -48,7 +52,8 @@ export default function Page() {
         <form
           onSubmit={handleSubmit(async (values) => {
             console.debug(values);
-            await sendNewPrescription(getCurrentUserId(), values);
+            const currentUser = await getCurrentUser(sessionCookie);
+            await sendNewPrescription(currentUser.id, values);
           })}
         >
           <CardContent

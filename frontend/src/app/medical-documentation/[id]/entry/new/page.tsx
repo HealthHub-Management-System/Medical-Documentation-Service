@@ -17,10 +17,11 @@ import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { Controller, useForm } from "react-hook-form";
 import dayjs from "dayjs";
-import { camelToSnake, getCurrentUserId } from "@/src/utils/utils";
+import { camelToSnake, getCurrentUser } from "@/src/utils/utils";
+import { cookies } from "next/headers";
 
 const sendNewMedicalDocumentationEntry = async (
-  userId: number,
+  userId: string,
   newEntry: Omit<MedicalDocumentationEntry, "id">
 ) => {
   const res = await fetch(
@@ -29,7 +30,7 @@ const sendNewMedicalDocumentationEntry = async (
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        "user-id": String(userId),
+        "user-id": userId,
       },
       body: JSON.stringify(camelToSnake(newEntry)),
     }
@@ -51,6 +52,11 @@ export default function Page({ params }: MedicalDocumentationEntryNewProps) {
       date: dayjs(),
     },
   });
+
+  const cookieStore = cookies();
+  const sessionCookie = cookieStore.get("session");
+  if (!sessionCookie) return;
+
   return (
     <Container
       maxWidth="xl"
@@ -72,7 +78,8 @@ export default function Page({ params }: MedicalDocumentationEntryNewProps) {
           onSubmit={handleSubmit(async (values) => {
             const { date, ...valuesRest } = values;
 
-            await sendNewMedicalDocumentationEntry(getCurrentUserId(), {
+            const currentUser = await getCurrentUser(sessionCookie);
+            await sendNewMedicalDocumentationEntry(currentUser.id, {
               date: date.format("DD-MM-YYYY"),
               ...valuesRest,
             });

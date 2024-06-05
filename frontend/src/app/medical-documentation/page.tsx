@@ -1,11 +1,12 @@
 import { mockMedicalDocumentations } from "@/src/mocks/mockMedicalDocumentations";
 import { Container, Typography } from "@mui/material";
 import { MedicalDocumentationEntryCard } from "./MedicalDocumentationEntryCard";
-import { getCurrentUserId, snakeToCamel } from "@/src/utils/utils";
+import { getCurrentUser, snakeToCamel } from "@/src/utils/utils";
 import { MedicalDocumentation } from "@/src/models/medicalDocumentation";
 import { LinkButton } from "../components/LinkButton";
+import { cookies } from "next/headers";
 
-const getMedicalDocumentation = async (patientId: number) => {
+const getMedicalDocumentation = async (patientId: string) => {
   const res = await fetch(
     `http://localhost:8000/medical_documentation?` +
       new URLSearchParams({
@@ -36,8 +37,11 @@ const getMedicalDocumentation = async (patientId: number) => {
 // };
 
 export default async function Page() {
-  const userId = getCurrentUserId();
-  const medicalDocumentation = await getMedicalDocumentation(userId);
+  const cookieStore = cookies();
+  const sessionCookie = cookieStore.get("session");
+  if (!sessionCookie) return;
+  const user = await getCurrentUser(sessionCookie);
+  const medicalDocumentation = await getMedicalDocumentation(user.id);
 
   if (!medicalDocumentation)
     return (
@@ -51,7 +55,7 @@ export default async function Page() {
         }}
       >
         <Typography variant="h4">
-          Medical documentation not found for user {userId}
+          Medical documentation not found for user {user.name}
         </Typography>
       </Container>
     );
@@ -68,7 +72,7 @@ export default async function Page() {
       }}
     >
       <Typography variant="h4">
-        Medical documentation for user {userId}
+        Medical documentation for user {user.name}
       </Typography>
 
       {medicalDocumentation.medicalDocumentationEntries.map((entry) => {

@@ -1,15 +1,16 @@
 import { mockPrescriptions } from "@/src/mocks/mockPrescriptions";
-import { getCurrentUserId, snakeToCamel } from "@/src/utils/utils";
+import { getCurrentUser, snakeToCamel } from "@/src/utils/utils";
 import { Container, Typography } from "@mui/material";
 import { PrescriptionCard } from "./PrescriptionCard";
 import { Prescription } from "@/src/models/prescription";
 import { LinkButton } from "../components/LinkButton";
+import { cookies } from "next/headers";
 
-const getPrescriptions = async (patientId: number) => {
+const getPrescriptions = async (patientId: string) => {
   const res = await fetch(
     `http://localhost:8000/prescriptions?` +
       new URLSearchParams({
-        patient_id: String(patientId),
+        patient_id: patientId,
       }),
     {
       method: "GET",
@@ -28,8 +29,11 @@ const getPrescriptions = async (patientId: number) => {
 };
 
 export default async function Page() {
-  const userId = getCurrentUserId();
-  const prescriptions = await getPrescriptions(1);
+  const cookieStore = cookies();
+  const sessionCookie = cookieStore.get("session");
+  if (!sessionCookie) return;
+  const currentUser = await getCurrentUser(sessionCookie);
+  const prescriptions = await getPrescriptions(currentUser.id);
 
   return (
     <Container
@@ -42,7 +46,9 @@ export default async function Page() {
         height: "100vh",
       }}
     >
-      <Typography variant="h4">Prescriptions for user {userId}</Typography>
+      <Typography variant="h4">
+        Prescriptions for user {currentUser.name}
+      </Typography>
       {prescriptions.map((prescription) => {
         return (
           <PrescriptionCard key={prescription.id} prescription={prescription} />

@@ -2,7 +2,9 @@ from fastapi import APIRouter, Depends, Header, HTTPException
 from models.database import SessionLocal
 from sqlalchemy.orm import Session, joinedload
 import models.prescription as model
+from models.drug import Drug
 import schemas.prescription as schema
+from schemas.new_prescription import NewPrescription
 
 router = APIRouter()
 
@@ -25,9 +27,16 @@ async def get_prescription(prescription_id: int, db: Session = Depends(get_db)):
         raise HTTPException(status_code=404, detail="Presription not found")
     return prescription
 
-@router.post("/prescriptions")
-async def add_prescription(prescription: schema.Prescritpion, db: Session = Depends(get_db)):
-    entry = model.Prescription(**prescription.model_dump())
+
+@router.post("/prescription")
+async def add_prescription(prescription: NewPrescription, db: Session = Depends(get_db)):
+    drug_id = db.query(Drug).filter(Drug.name == prescription.drug_name).first().id
+    entry = model.Prescription(
+        patient_id=prescription.patient_id,
+        doctor_id=prescription.doctor_id,
+        drug_id=drug_id,
+        description=prescription.description
+    )
     db.add(entry)
     db.commit()
     return entry

@@ -2,15 +2,15 @@ import { z } from "zod";
 
 export type Prescription = {
   id: number;
-  doctorId: number;
-  patientId: number;
+  doctorId: string;
+  patientId: string;
   drugName: string;
   description: string;
 };
 
 export const NewPrescriptionValidationSchema = z.object({
-  doctorId: z.number(),
-  patientId: z.number(),
+  doctorId: z.string(),
+  patientId: z.string(),
   drugName: z.string(),
   description: z.string(),
 });
