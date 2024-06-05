@@ -1,39 +1,42 @@
-"use client";
-
 import {
+  Autocomplete,
   Button,
   Card,
   CardContent,
   Container,
+  Paper,
   TextField,
   Typography,
 } from "@mui/material";
 import { Controller, useForm } from "react-hook-form";
 import { NewReferralForm, Referral } from "@/src/models/referral";
-import { camelToSnake, getCurrentUser } from "@/src/utils/utils";
+import { camelToSnake, getCurrentUser, listPatients } from "@/src/utils/utils";
 import { cookies } from "next/headers";
+import { useState } from "react";
+import { User } from "@/src/models/user";
 
-const sendNewPrescription = async (
-  userId: string,
+const sendNewReferral = async (
   newReferral: Omit<Referral, "id">
 ) => {
   const res = await fetch("http://localhost:8003/referral", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
-      "patient-id": String(newReferral.patientId),
-      "doctor-id": String(newReferral.doctorId),
-      },
+    },
     body: JSON.stringify(camelToSnake(newReferral)),
   });
   return res.ok;  
 };
 
-export default function Page() {
-  const { control, handleSubmit } = useForm<NewReferralForm>({});
+export default async function Page() {
+  const { control, handleSubmit, setError } = useForm<NewReferralForm>({});
+  const patients = await listPatients();
+  const [filteredPatients, setFilteredPatients] = useState<User[]>(patients);
+
   const cookieStore = cookies();
   const sessionCookie = cookieStore.get("session");
   if (!sessionCookie) return;
+
   return (
     <Container
       maxWidth="xl"
@@ -52,7 +55,18 @@ export default function Page() {
           onSubmit={handleSubmit(async (values) => {
             console.debug(values);
             const currentUser = await getCurrentUser(sessionCookie);
-            await sendNewPrescription(currentUser.id, values);
+            if (!currentUser) return;
+
+            const patient = patients.find((patient) => patient.name === values.patientName);
+            if (!patient) return;
+
+            const newReferral = {
+              doctorId: currentUser.id,
+              patientId: patient.id,
+              description: values.description,
+            };
+
+            await sendNewReferral(newReferral);
           })}
         >
           <CardContent
@@ -64,26 +78,36 @@ export default function Page() {
             }}
           >
             <Controller
-              name="doctorId"
+              name="patientName"
               control={control}
-              render={({ field }) => (
-                <TextField
-                  sx={{ m: 1 }}
-                  label="Doctor"
-                  {...field}
-                  onChange={(diagnose) => field.onChange(diagnose)}
-                />
-              )}
-            />
-            <Controller
-              name="patientId"
-              control={control}
-              render={({ field }) => (
-                <TextField
-                  sx={{ m: 1 }}
-                  label="Patient"
-                  {...field}
-                  onChange={(diagnose) => field.onChange(diagnose)}
+              render={({ field, fieldState }) => (
+                <Autocomplete
+                  options={filteredPatients.map((patient) => patient.name)}
+                  sx={{ m: 1, width: 300 }}
+                  renderInput={(params) => (
+                    <TextField 
+                      {...params} 
+                      label="Patient" 
+                      error={!!fieldState.error}
+                      helperText={fieldState.error ? fieldState.error.message : ""}
+                    />
+                  )}
+                  noOptionsText=""
+                  PaperComponent={({ children }) => 
+                    filteredPatients.length === 0 ? null : <Paper>{children}</Paper>
+                  }
+                  onInputChange={(event, value) => {
+                    field.onChange(value)
+                    const newFilteredPatients = patients.filter((patient) => patient.name.startsWith(value))
+                    setFilteredPatients(newFilteredPatients)
+
+                    if (newFilteredPatients.length === 0) {
+                      setError("patientName", {
+                        type: "manual",
+                        message: "Patient not found",
+                      });
+                    }
+                  }}
                 />
               )}
             />

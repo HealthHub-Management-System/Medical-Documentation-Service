@@ -1,4 +1,4 @@
-"use client";
+"use server";
 
 import {
   Button,
@@ -12,10 +12,11 @@ import {
 } from "@mui/material";
 import { Controller, useForm } from "react-hook-form";
 import { Prescription, NewPrescriptionForm } from "@/src/models/prescription";
-import { camelToSnake, getCurrentUser } from "@/src/utils/utils";
+import { camelToSnake, getCurrentUser, listPatients } from "@/src/utils/utils";
 import { cookies } from "next/headers";
 import { useEffect, useState } from "react";
 import { Drug } from "@/src/models/drug";
+import { User } from "@/src/models/user";
 
 const sendNewPrescription = async (
   newPrescription: Omit<Prescription, "id">
@@ -31,9 +32,12 @@ const sendNewPrescription = async (
   return res.ok;
 };
 
-export default function Page() {
+export default async function Page() {
   const { control, handleSubmit, getValues, setError, clearErrors } = useForm<NewPrescriptionForm>({});
   const [drugSuggestions, setDrugSuggestions] = useState<string[]>([]);
+  const patients = await listPatients();
+  const [filteredPatients, setFilteredPatients] = useState<User[]>(patients);
+
 
   const fetchDrugSuggestions = async () => {
     try {
@@ -82,8 +86,16 @@ export default function Page() {
             const currentUser = await getCurrentUser(sessionCookie);
             if (!currentUser) return;
 
-            const newPrescription = {currentUser.id, values.drugName, values.description} as Omit<Prescription, "id">;
-            await sendNewPrescription(values);
+            const patientId = patients.find((patient) => patient.name === values.patientName)?.id;
+            if (!patientId) return;
+
+            const newPrescription = {
+              doctorId: currentUser.id, 
+              patientId: patientId, 
+              drugName: values.drugName, 
+              description: values.description
+            } as Omit<Prescription, "id">;
+            await sendNewPrescription(newPrescription);
           })}
         >
           <CardContent
@@ -97,12 +109,34 @@ export default function Page() {
             <Controller
               name="patientName"
               control={control}
-              render={({ field }) => (
-                <TextField
+              render={({ field, fieldState }) => (
+                <Autocomplete
+                  options={patients.map((patient) => patient.name)}
                   sx={{ m: 1, width: 300 }}
-                  label="Patient"
-                  {...field}
-                  onChange={(e) => field.onChange(e.target.value)}
+                  renderInput={(params) => (
+                    <TextField 
+                      {...params} 
+                      label="Patient" 
+                      error={!!fieldState.error}
+                      helperText={fieldState.error ? fieldState.error.message : ""}
+                    />
+                  )}
+                  noOptionsText=""
+                  PaperComponent={({ children }) => 
+                    patients.length === 0 ? null : <Paper>{children}</Paper>
+                  }
+                  onInputChange={(event, value) => {
+                    field.onChange(value)
+                    const newFilteredPatients = patients.filter((patient) => patient.name.startsWith(value))
+                    setFilteredPatients(newFilteredPatients)
+
+                    if (newFilteredPatients.length === 0) {
+                      setError("patientName", {
+                        type: "manual",
+                        message: "Patient not found",
+                      });
+                    }
+                  }}
                 />
               )}
             />
