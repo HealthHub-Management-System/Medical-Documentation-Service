@@ -5,12 +5,19 @@ from models.database import SessionLocal
 from models.user import User
 from models.doctor import Doctor
 from models.prescription import Prescription
+from models.drug import Drug
 from contextlib import asynccontextmanager
-from routers import medical_documentation, prescription, referral
+from routers import medical_documentation, prescription, referral, drug
 from fastapi.middleware.cors import CORSMiddleware
 
         
 async def init_db_values(db: Session):
+    if db.query(Drug).first() is None:
+        with open("leki.txt", "r") as file:
+            for line in file:
+                db.add(Drug(name=line.strip()))
+            db.commit()
+
     # Create some initial values in the database
     if db.query(User).first() is None:
         user = User(first_name="John", last_name="Doe", isPatient=True)
@@ -28,12 +35,12 @@ async def init_db_values(db: Session):
         db.add(doctor)
         db.commit()
         user = db.query(User).first()
-        prescription = Prescription(doctor_id = doctor.id, patient_id = user.id, description = "Painkillers")
+        drug = db.query(Drug).filter(Drug.name.startswith('Apap')).first()
+        prescription = Prescription(doctor_id=doctor.id, patient_id=user.id, drug_id=drug.id, description="Painkillers")
         db.add(prescription)
         db.commit()
-        
-    db.close()
 
+    db.close()
     
         
 @asynccontextmanager
@@ -44,13 +51,16 @@ async def lifespan(app: FastAPI):
     yield
     # Close the database connection
     SessionLocal.close_all()
+
     
 app = FastAPI(lifespan=lifespan)
+
 
 origins = [
     "http://localhost",
     "http://localhost:3000",
 ]
+
 
 app.add_middleware(
     CORSMiddleware,
@@ -60,9 +70,12 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+
 app.include_router(medical_documentation.router)
 app.include_router(prescription.router)
 app.include_router(referral.router)
+app.include_router(drug.router)
+
 
 @app.get("/")
 def read_root():

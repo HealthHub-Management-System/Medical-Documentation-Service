@@ -9,4 +9,5 @@ class Prescription(Base):
     id = Column(Integer, primary_key=True, index=True)
     doctor_id = Column(Integer, ForeignKey("doctors.id"))
     patient_id = Column(Integer, ForeignKey("users.id"))
+    drug_id = Column(Integer, ForeignKey("drugs.id"))
     description = Column(String)
