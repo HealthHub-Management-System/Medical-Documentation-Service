@@ -4,49 +4,49 @@ import { mockMedicalDocumentationEntries } from "@/src/mocks/mockMedicalDocument
 export const mockMedicalDocumentations: MedicalDocumentation[] = [
   {
     id: 301,
-    patientId: 201,
+    patientId: "a5f96fd2-a29f-4d95-bdcb-1545b59310fd",
     medicalDocumentationEntries: mockMedicalDocumentationEntries.filter(
       (entry) => entry.medicalDocumentationId === 301
     ),
   },
   {
     id: 302,
-    patientId: 202,
+    patientId: "a5f96fd2-a29f-4d95-bdcb-1545b59310fd",
     medicalDocumentationEntries: mockMedicalDocumentationEntries.filter(
       (entry) => entry.medicalDocumentationId === 302
     ),
   },
   {
     id: 303,
-    patientId: 203,
+    patientId: "a5f96fd2-a29f-4d95-bdcb-1545b59310fd",
     medicalDocumentationEntries: mockMedicalDocumentationEntries.filter(
       (entry) => entry.medicalDocumentationId === 303
     ),
   },
   {
     id: 304,
-    patientId: 204,
+    patientId: "a5f96fd2-a29f-4d95-bdcb-1545b59310fd",
     medicalDocumentationEntries: mockMedicalDocumentationEntries.filter(
       (entry) => entry.medicalDocumentationId === 304
     ),
   },
   {
     id: 305,
-    patientId: 205,
+    patientId: "a5f96fd2-a29f-4d95-bdcb-1545b59310fd",
     medicalDocumentationEntries: mockMedicalDocumentationEntries.filter(
       (entry) => entry.medicalDocumentationId === 305
     ),
   },
   {
     id: 306,
-    patientId: 206,
+    patientId: "a5f96fd2-a29f-4d95-bdcb-1545b59310fd",
     medicalDocumentationEntries: mockMedicalDocumentationEntries.filter(
       (entry) => entry.medicalDocumentationId === 306
     ),
   },
   {
     id: 307,
-    patientId: 207,
+    patientId: "a5f96fd2-a29f-4d95-bdcb-1545b59310fd",
     medicalDocumentationEntries: mockMedicalDocumentationEntries.filter(
       (entry) => entry.medicalDocumentationId === 307
     ),

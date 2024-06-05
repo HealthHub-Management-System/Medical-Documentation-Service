@@ -1,6 +1,6 @@
 export type User = {
-  id: number;
-  firstName: string;
-  lastName: string;
-  isPatient: boolean;
+  id: string;
+  name: string;
+  email: string;
+  role: "patient" | "doctor" | "admin";
 };
