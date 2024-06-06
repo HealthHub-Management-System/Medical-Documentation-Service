@@ -33,6 +33,47 @@ export default async function Page() {
   const currentUser = await getCurrentUser(sessionCookie);
   const referrals = await getReferrals(currentUser.id);
 
+  if (currentUser.role === "patient") {
+    return (
+      <Container
+        maxWidth="xl"
+        sx={{
+          display: "flex",
+          flexDirection: "column",
+          justifyContent: "center",
+          alignItems: "center",
+          height: "100vh",
+        }}
+      >
+        <Typography variant="h4">
+          Referrals for user {currentUser.name}
+        </Typography>
+        {referrals.map((referral) => {
+          return <ReferralCard key={referral.id} referral={referral} />;
+        })}
+      </Container>
+    );
+  }
+
+  if (currentUser.role === "doctor") {
+    return (
+      <Container
+        maxWidth="xl"
+        sx={{
+          display: "flex",
+          flexDirection: "column",
+          justifyContent: "center",
+          alignItems: "center",
+          height: "100vh",
+        }}
+      >
+        <LinkButton linkProps={{ href: `/referrals/new` }}>
+          Add new referral
+        </LinkButton>
+      </Container>
+    );
+  }
+
   return (
     <Container
       maxWidth="xl"
