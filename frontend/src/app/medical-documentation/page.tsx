@@ -11,7 +11,7 @@ import { useState, useEffect } from "react";
 
 const getMedicalDocumentation = async (patientId: string) => {
   const res = await fetch(
-    `http://localhost:8000/medical-documentations?` +
+    `http://localhost:6969/medical-documentations?` +
       new URLSearchParams({
         user_id: patientId,
       }),

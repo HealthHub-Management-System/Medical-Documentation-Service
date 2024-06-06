@@ -11,7 +11,7 @@ import { useState, useEffect } from "react";
 
 const getPrescriptions = async (patientId: string) => {
   const res = await fetch(
-    `http://localhost:8000/prescriptions?` +
+    `http://localhost:6969/prescriptions?` +
       new URLSearchParams({
         patient_id: patientId,
       }),

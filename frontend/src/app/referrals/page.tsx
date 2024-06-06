@@ -11,7 +11,7 @@ import { User } from "@/src/models/user";
 
 const getReferrals = async (patientId: string) => {
   const res = await fetch(
-    `http://localhost:8000/referrals?` +
+    `http://localhost:6969/referrals?` +
       new URLSearchParams({
         patient_id: patientId,
       }),

@@ -24,7 +24,7 @@ import { User } from "@/src/models/user";
 const sendNewPrescription = async (
   newPrescription: Omit<Prescription, "id">
 ) => {
-  const res = await fetch("http://localhost:8000/prescriptions", {
+  const res = await fetch("http://localhost:6969/prescriptions", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -47,7 +47,7 @@ export default function Page() {
   const fetchDrugSuggestions = async () => {
     try {
       const response = await fetch(
-        `http://localhost:8000/drugs?name=${getValues("drugName")}`
+        `http://localhost:6969/drugs?name=${getValues("drugName")}`
       );
       if (response.status === 404) {
         setError("drugName", {
