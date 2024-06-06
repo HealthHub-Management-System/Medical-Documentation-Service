@@ -94,7 +94,7 @@ export default function Page() {
           onSubmit={handleSubmit(async (values) => {
             console.debug(values);
             const currentUser = await getCurrentUserClient();
-            if (!currentUser) return;
+            if (!currentUser || currentUser.role !== "doctor") return;
 
             const patientId = patients.find(
               (patient) => patient.name === values.patientName

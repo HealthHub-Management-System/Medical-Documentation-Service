@@ -35,6 +35,52 @@ export default async function Page() {
   const currentUser = await getCurrentUser(sessionCookie);
   const prescriptions = await getPrescriptions(currentUser.id);
 
+  if (currentUser.role === "patient") {
+    return (
+      <Container
+        maxWidth="xl"
+        sx={{
+          display: "flex",
+          flexDirection: "column",
+          justifyContent: "center",
+          alignItems: "center",
+          height: "100vh",
+        }}
+      >
+        <Typography variant="h4">
+          Prescriptions for user {currentUser.name}
+        </Typography>
+        {prescriptions.map((prescription) => {
+          return (
+            <PrescriptionCard
+              key={prescription.id}
+              prescription={prescription}
+            />
+          );
+        })}
+      </Container>
+    );
+  }
+
+  if (currentUser.role === "doctor") {
+    return (
+      <Container
+        maxWidth="xl"
+        sx={{
+          display: "flex",
+          flexDirection: "column",
+          justifyContent: "center",
+          alignItems: "center",
+          height: "100vh",
+        }}
+      >
+        <LinkButton linkProps={{ href: `/prescriptions/new` }}>
+          Add new prescription
+        </LinkButton>
+      </Container>
+    );
+  }
+
   return (
     <Container
       maxWidth="xl"
