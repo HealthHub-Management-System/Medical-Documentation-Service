@@ -5,6 +5,7 @@ export type Prescription = {
   doctorId: string;
   patientId: string;
   drugName: string;
+  drugId: number;
   description: string;
 };
 

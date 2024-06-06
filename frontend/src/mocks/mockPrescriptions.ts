@@ -7,6 +7,7 @@ export const mockPrescriptions: Prescription[] = [
     patientId: "a5f96fd2-a29f-4d95-bdcb-1545b59310fd",
     description: "Prescription 1",
     drugName: "Viagra (tabletki powlekane)",
+    drugId: 8877,
   },
   {
     id: 2,
@@ -14,6 +15,7 @@ export const mockPrescriptions: Prescription[] = [
     patientId: "a5f96fd2-a29f-4d95-bdcb-1545b59310fd",
     description: "Prescription 2",
     drugName: "Viagra (tabletki powlekane)",
+    drugId: 8877,
   },
   {
     id: 3,
@@ -21,6 +23,7 @@ export const mockPrescriptions: Prescription[] = [
     patientId: "a5f96fd2-a29f-4d95-bdcb-1545b59310fd",
     description: "Prescription 3",
     drugName: "Viagra (tabletki powlekane)",
+    drugId: 8877,
   },
   {
     id: 4,
@@ -28,6 +31,7 @@ export const mockPrescriptions: Prescription[] = [
     patientId: "a5f96fd2-a29f-4d95-bdcb-1545b59310fd",
     description: "Prescription 4",
     drugName: "Viagra (tabletki powlekane)",
+    drugId: 8877,
   },
   {
     id: 5,
@@ -35,6 +39,7 @@ export const mockPrescriptions: Prescription[] = [
     patientId: "a5f96fd2-a29f-4d95-bdcb-1545b59310fd",
     description: "Prescription 5",
     drugName: "Viagra (tabletki powlekane)",
+    drugId: 8877,
   },
   {
     id: 6,
@@ -42,6 +47,7 @@ export const mockPrescriptions: Prescription[] = [
     patientId: "a5f96fd2-a29f-4d95-bdcb-1545b59310fd",
     description: "Prescription 6",
     drugName: "Viagra (tabletki powlekane)",
+    drugId: 8877,
   },
   {
     id: 7,
@@ -49,6 +55,7 @@ export const mockPrescriptions: Prescription[] = [
     patientId: "a5f96fd2-a29f-4d95-bdcb-1545b59310fd",
     description: "Prescription 7",
     drugName: "Viagra (tabletki powlekane)",
+    drugId: 8877,
   },
   {
     id: 8,
@@ -56,6 +63,7 @@ export const mockPrescriptions: Prescription[] = [
     patientId: "a5f96fd2-a29f-4d95-bdcb-1545b59310fd",
     description: "Prescription 8",
     drugName: "Viagra (tabletki powlekane)",
+    drugId: 8877,
   },
   {
     id: 9,
@@ -63,6 +71,7 @@ export const mockPrescriptions: Prescription[] = [
     patientId: "a5f96fd2-a29f-4d95-bdcb-1545b59310fd",
     description: "Prescription 9",
     drugName: "Viagra (tabletki powlekane)",
+    drugId: 8877,
   },
   {
     id: 10,
@@ -70,6 +79,7 @@ export const mockPrescriptions: Prescription[] = [
     patientId: "a5f96fd2-a29f-4d95-bdcb-1545b59310fd",
     description: "Prescription 10",
     drugName: "Viagra (tabletki powlekane)",
+    drugId: 8877,
   },
   {
     id: 11,
@@ -77,6 +87,7 @@ export const mockPrescriptions: Prescription[] = [
     patientId: "a5f96fd2-a29f-4d95-bdcb-1545b59310fd",
     description: "Prescription 11",
     drugName: "Viagra (tabletki powlekane)",
+    drugId: 8877,
   },
   {
     id: 12,
@@ -84,6 +95,7 @@ export const mockPrescriptions: Prescription[] = [
     patientId: "a5f96fd2-a29f-4d95-bdcb-1545b59310fd",
     description: "Prescription 12",
     drugName: "Viagra (tabletki powlekane)",
+    drugId: 8877,
   },
   {
     id: 13,
@@ -91,6 +103,7 @@ export const mockPrescriptions: Prescription[] = [
     patientId: "a5f96fd2-a29f-4d95-bdcb-1545b59310fd",
     description: "Prescription 13",
     drugName: "Viagra (tabletki powlekane)",
+    drugId: 8877,
   },
   {
     id: 14,
@@ -98,6 +111,7 @@ export const mockPrescriptions: Prescription[] = [
     patientId: "a5f96fd2-a29f-4d95-bdcb-1545b59310fd",
     description: "Prescription 14",
     drugName: "Viagra (tabletki powlekane)",
+    drugId: 8877,
   },
   {
     id: 15,
@@ -105,6 +119,7 @@ export const mockPrescriptions: Prescription[] = [
     patientId: "a5f96fd2-a29f-4d95-bdcb-1545b59310fd",
     description: "Prescription 15",
     drugName: "Viagra (tabletki powlekane)",
+    drugId: 8877,
   },
   {
     id: 16,
@@ -112,6 +127,7 @@ export const mockPrescriptions: Prescription[] = [
     patientId: "a5f96fd2-a29f-4d95-bdcb-1545b59310fd",
     description: "Prescription 16",
     drugName: "Viagra (tabletki powlekane)",
+    drugId: 8877,
   },
   {
     id: 17,
@@ -119,6 +135,7 @@ export const mockPrescriptions: Prescription[] = [
     patientId: "a5f96fd2-a29f-4d95-bdcb-1545b59310fd",
     description: "Prescription 17",
     drugName: "Viagra (tabletki powlekane)",
+    drugId: 8877,
   },
   {
     id: 18,
@@ -126,6 +143,7 @@ export const mockPrescriptions: Prescription[] = [
     patientId: "a5f96fd2-a29f-4d95-bdcb-1545b59310fd",
     description: "Prescription 18",
     drugName: "Viagra (tabletki powlekane)",
+    drugId: 8877,
   },
   {
     id: 19,
@@ -133,6 +151,7 @@ export const mockPrescriptions: Prescription[] = [
     patientId: "a5f96fd2-a29f-4d95-bdcb-1545b59310fd",
     description: "Prescription 19",
     drugName: "Viagra (tabletki powlekane)",
+    drugId: 8877,
   },
   {
     id: 20,
@@ -140,5 +159,6 @@ export const mockPrescriptions: Prescription[] = [
     patientId: "a5f96fd2-a29f-4d95-bdcb-1545b59310fd",
     description: "Prescription 20",
     drugName: "Viagra (tabletki powlekane)",
+    drugId: 8877,
   },
 ];
