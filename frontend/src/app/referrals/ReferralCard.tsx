@@ -1,12 +1,36 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Card, CardContent, Typography } from "@mui/material";
 import { Referral } from "@/src/models/referral";
+import { listDoctors, listPatients } from "@/src/utils/utils";
 
 interface ReferralCardProps {
   referral: Referral;
 }
 
 const ReferralCard: React.FC<ReferralCardProps> = ({ referral }) => {
+  const [doctorName, setDoctorName] = useState<string>("");
+  const [patientName, setPatientName] = useState<string>("");
+
+  useEffect(() => {
+    const fetchDoctorName = async () => {
+      const doctors = await listDoctors()
+      const doctor = doctors.find((doctor) => doctor.id === referral.doctorId);
+      if (doctor) {
+        setDoctorName(doctor.name);
+      }
+    }
+    const fetchPatientName = async () => {
+      const patients = await listPatients();
+      const patient = patients.find((patient) => patient.id === referral.patientId);
+      if (patient) {
+        setPatientName(patient.name);
+      }
+    }
+
+    fetchDoctorName();
+    fetchPatientName();
+  }, []);
+  
   return (
     <Card sx={{ m: 1, width: "100%" }}>
       <CardContent>
@@ -14,10 +38,10 @@ const ReferralCard: React.FC<ReferralCardProps> = ({ referral }) => {
           Referral #{referral.id}
         </Typography>
         <Typography variant="body1" component="p">
-          Doctor ID: {referral.doctorId}
+          Doctor: {doctorName}
         </Typography>
         <Typography variant="body1" component="p">
-          Patient ID: {referral.patientId}
+          Patient: {patientName}
         </Typography>
         <Typography variant="body1" component="p">
           Description: {referral.description}

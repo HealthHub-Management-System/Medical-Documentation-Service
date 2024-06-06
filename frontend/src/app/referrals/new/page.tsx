@@ -130,7 +130,7 @@ export default function Page() {
               control={control}
               render={({ field }) => (
                 <TextField
-                  sx={{ m: 1 }}
+                  sx={{ m: 1, width: 300}}
                   label="Description"
                   {...field}
                   onChange={(diagnose) => field.onChange(diagnose)}
