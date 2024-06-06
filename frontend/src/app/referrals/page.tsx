@@ -1,10 +1,13 @@
+"use client";
+
 import { mockReferrals } from "@/src/mocks/mockReferrals";
-import { getCurrentUser, snakeToCamel } from "@/src/utils/utils";
+import { getCurrentUserClient, snakeToCamel } from "@/src/utils/utils";
 import { Container, Typography } from "@mui/material";
 import ReferralCard from "./ReferralCard";
 import { Referral } from "@/src/models/referral";
 import { LinkButton } from "../components/LinkButton";
-import { cookies } from "next/headers";
+import { useEffect, useState } from "react";
+import { User } from "@/src/models/user";
 
 const getReferrals = async (patientId: string) => {
   const res = await fetch(
@@ -26,12 +29,19 @@ const getReferrals = async (patientId: string) => {
   );
 };
 
-export default async function Page() {
-  const cookieStore = cookies();
-  const sessionCookie = cookieStore.get("session");
-  if (!sessionCookie) return;
-  const currentUser = await getCurrentUser(sessionCookie);
-  const referrals = await getReferrals(currentUser.id);
+export default function Page() {
+  const [currentUser, setCurrentUser] = useState<User | null>(null);
+  useEffect(() => {
+    getCurrentUserClient().then((u) => setCurrentUser(u));
+  }, []);
+
+  const [referrals, setReferrals] = useState<Referral[]>([]);
+  useEffect(() => {
+    if (!currentUser) return;
+    getReferrals(currentUser.id).then((r) => setReferrals(r));
+  }, [currentUser]);
+
+  if (!currentUser) return null;
 
   if (currentUser.role === "patient") {
     return (

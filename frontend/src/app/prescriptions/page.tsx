@@ -1,10 +1,13 @@
+"use client";
+
 import { mockPrescriptions } from "@/src/mocks/mockPrescriptions";
-import { getCurrentUser, snakeToCamel } from "@/src/utils/utils";
+import { getCurrentUserClient, snakeToCamel } from "@/src/utils/utils";
 import { Container, Typography } from "@mui/material";
 import { PrescriptionCard } from "./PrescriptionCard";
 import { Prescription } from "@/src/models/prescription";
 import { LinkButton } from "../components/LinkButton";
-import { cookies } from "next/headers";
+import { User } from "@/src/models/user";
+import { useState, useEffect } from "react";
 
 const getPrescriptions = async (patientId: string) => {
   const res = await fetch(
@@ -28,12 +31,19 @@ const getPrescriptions = async (patientId: string) => {
   );
 };
 
-export default async function Page() {
-  const cookieStore = cookies();
-  const sessionCookie = cookieStore.get("session");
-  if (!sessionCookie) return;
-  const currentUser = await getCurrentUser(sessionCookie);
-  const prescriptions = await getPrescriptions(currentUser.id);
+export default function Page() {
+  const [currentUser, setCurrentUser] = useState<User | null>(null);
+  useEffect(() => {
+    getCurrentUserClient().then((u) => setCurrentUser(u));
+  }, []);
+
+  const [prescriptions, setPrescriptions] = useState<Prescription[]>([]);
+  useEffect(() => {
+    if (!currentUser) return;
+    getPrescriptions(currentUser.id).then((r) => setPrescriptions(r));
+  }, [currentUser]);
+
+  if (!currentUser) return null;
 
   if (currentUser.role === "patient") {
     return (
