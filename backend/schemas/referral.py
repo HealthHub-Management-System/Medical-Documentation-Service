@@ -1,6 +1,4 @@
 from pydantic import BaseModel
-from schemas.user import User
-from schemas.doctor import Doctor
 
 
 class Referral(BaseModel):

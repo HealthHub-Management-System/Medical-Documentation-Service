@@ -2,8 +2,6 @@ from fastapi import FastAPI, Depends
 from sqlalchemy.orm import Session
 from models.medical_documentation import MedicalDocumentation, MedicalDocumentationEntry
 from models.database import SessionLocal
-from models.user import User
-from models.doctor import Doctor
 from models.prescription import Prescription
 from models.drug import Drug
 from contextlib import asynccontextmanager
@@ -19,24 +17,17 @@ async def init_db_values(db: Session):
             db.commit()
 
     # Create some initial values in the database
-    if db.query(User).first() is None:
-        user = User(first_name="John", last_name="Doe", isPatient=True)
-        db.add(user)
-        db.commit()
-        medical_documentation = MedicalDocumentation(patient_id=user.id)
+    if db.query(MedicalDocumentation).first() is None:
+        medical_documentation = MedicalDocumentation(patient_id='a5f96fd2-a29f-4d95-bdcb-1545b59310fd')
         db.add(medical_documentation)
         db.commit()
         medical_documentation_entry = MedicalDocumentationEntry(date="2021-01-01", diagnose="Headache", recommendations="Rest", medical_documentation_id=medical_documentation.id)
         db.add(medical_documentation_entry)
         db.commit()
 
-    if db.query(Doctor).first() is None:
-        doctor = Doctor(first_name="DocJohn", last_name="DocDoe")
-        db.add(doctor)
-        db.commit()
-        user = db.query(User).first()
+    if db.query(Prescription).first() is None:
         drug = db.query(Drug).filter(Drug.name.startswith('Apap')).first()
-        prescription = Prescription(doctor_id=doctor.id, patient_id=user.id, drug_id=drug.id, description="Painkillers")
+        prescription = Prescription(doctor_id='a5f96fd2-a29f-4d95-bdcb-1545b59310fd', patient_id='a5f96fd2-a29f-4d95-bdcb-1545b59310fd', drug_id=drug.id, description="Painkillers")
         db.add(prescription)
         db.commit()
 

@@ -1,6 +1,4 @@
 from pydantic import BaseModel
-from .user import User
-from .doctor import Doctor
 
 
 class Prescritpion(BaseModel):
