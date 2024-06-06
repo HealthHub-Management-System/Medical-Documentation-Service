@@ -9,5 +9,5 @@ RUN npm install
 
 COPY . .
 
-CMD ["npm", "run", "dev"]
+CMD ["next", "build", "&&", "next", "start"]
 
