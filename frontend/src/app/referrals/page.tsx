@@ -11,7 +11,7 @@ import { User } from "@/src/models/user";
 
 const getReferrals = async (patientId: string) => {
   const res = await fetch(
-    `http://backend:8000/referrals?` +
+    `http://localhost:8000/referrals?` +
       new URLSearchParams({
         patient_id: patientId,
       }),
@@ -52,7 +52,6 @@ export default function Page() {
           flexDirection: "column",
           justifyContent: "center",
           alignItems: "center",
-          height: "100vh",
         }}
       >
         <Typography variant="h4">
@@ -74,7 +73,6 @@ export default function Page() {
           flexDirection: "column",
           justifyContent: "center",
           alignItems: "center",
-          height: "100vh",
         }}
       >
         <LinkButton linkProps={{ href: `/referrals/new` }}>
@@ -92,7 +90,6 @@ export default function Page() {
         flexDirection: "column",
         justifyContent: "center",
         alignItems: "center",
-        height: "100vh",
       }}
     >
       <Typography variant="h4">

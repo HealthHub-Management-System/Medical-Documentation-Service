@@ -54,7 +54,6 @@ export default function Page() {
           flexDirection: "column",
           justifyContent: "center",
           alignItems: "center",
-          height: "100vh",
         }}
       >
         <Typography variant="h4">
@@ -81,7 +80,6 @@ export default function Page() {
           flexDirection: "column",
           justifyContent: "center",
           alignItems: "center",
-          height: "100vh",
         }}
       >
         <LinkButton linkProps={{ href: `/prescriptions/new` }}>
@@ -99,7 +97,6 @@ export default function Page() {
         flexDirection: "column",
         justifyContent: "center",
         alignItems: "center",
-        height: "100vh",
       }}
     >
       <Typography variant="h4">

@@ -24,7 +24,7 @@ import { User } from "@/src/models/user";
 const sendNewPrescription = async (
   newPrescription: Omit<Prescription, "id">
 ) => {
-  const res = await fetch("http://localhost:8003/prescription", {
+  const res = await fetch("http://localhost:8000/prescriptions", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",

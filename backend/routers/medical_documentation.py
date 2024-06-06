@@ -27,7 +27,10 @@ async def create_medical_documentation_if_not_exists(db: Session, user_id: str) 
 async def get_medical_documentation(user_id: str = Query(None), db: Session = Depends(get_db)):
     if user_id is None:
         raise HTTPException(status_code=400, detail="ID not provided")
-    medical_documentation = db.query(models.MedicalDocumentation).filter(models.MedicalDocumentation.patient_id == user_id).options(joinedload(models.MedicalDocumentation.medical_documentation_entries)).first()
+    medical_documentation = db.query(models.MedicalDocumentation)\
+        .filter(models.MedicalDocumentation.patient_id == user_id)\
+        .options(joinedload(models.MedicalDocumentation.medical_documentation_entries))\
+        .first()
     if medical_documentation is None:
         raise HTTPException(status_code=404, detail="User not found")
     return medical_documentation
