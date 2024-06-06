@@ -8,8 +8,7 @@ export type Referral = {
 };
 
 export const NewReferralValidationSchema = z.object({
-  doctorId: z.string(),
-  patientId: z.string(),
+  patientName: z.string(),
   description: z.string(),
 });
 
