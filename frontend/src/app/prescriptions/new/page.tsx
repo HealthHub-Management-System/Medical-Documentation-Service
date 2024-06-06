@@ -1,4 +1,4 @@
-"use server";
+"use client";
 
 import {
   Button,
@@ -12,8 +12,11 @@ import {
 } from "@mui/material";
 import { Controller, useForm } from "react-hook-form";
 import { Prescription, NewPrescriptionForm } from "@/src/models/prescription";
-import { camelToSnake, getCurrentUser, listPatients } from "@/src/utils/utils";
-import { cookies } from "next/headers";
+import {
+  camelToSnake,
+  getCurrentUserClient,
+  listPatients,
+} from "@/src/utils/utils";
 import { useEffect, useState } from "react";
 import { Drug } from "@/src/models/drug";
 import { User } from "@/src/models/user";
@@ -32,16 +35,20 @@ const sendNewPrescription = async (
   return res.ok;
 };
 
-export default async function Page() {
-  const { control, handleSubmit, getValues, setError, clearErrors } = useForm<NewPrescriptionForm>({});
-  const [drugSuggestions, setDrugSuggestions] = useState<string[]>([]);
-  const patients = await listPatients();
-  const [filteredPatients, setFilteredPatients] = useState<User[]>(patients);
+export default function Page() {
+  const { control, handleSubmit, getValues, setError, clearErrors } =
+    useForm<NewPrescriptionForm>({});
 
+  const [drugSuggestions, setDrugSuggestions] = useState<string[]>([]);
+
+  const [patients, setPatients] = useState<User[]>([]);
+  const [filteredPatients, setFilteredPatients] = useState<User[]>(patients);
 
   const fetchDrugSuggestions = async () => {
     try {
-      const response = await fetch(`http://localhost:8000/drugs?name=${getValues("drugName")}`);
+      const response = await fetch(
+        `http://localhost:8000/drugs?name=${getValues("drugName")}`
+      );
       if (response.status === 404) {
         setError("drugName", {
           type: "manual",
@@ -49,7 +56,7 @@ export default async function Page() {
         });
         setDrugSuggestions([]);
       } else {
-        const data = await response.json() as Drug[];
+        const data = (await response.json()) as Drug[];
         const drugNames = data.map((drug) => drug.name);
         setDrugSuggestions(drugNames);
         clearErrors("drugName");
@@ -62,9 +69,12 @@ export default async function Page() {
     }
   };
 
-  const cookieStore = cookies();
-  const sessionCookie = cookieStore.get("session");
-  if (!sessionCookie) return;
+  useEffect(() => {
+    const fetchPatients = async () => {
+      setPatients(await listPatients());
+    };
+    fetchPatients();
+  }, []);
 
   return (
     <Container
@@ -83,17 +93,19 @@ export default async function Page() {
         <form
           onSubmit={handleSubmit(async (values) => {
             console.debug(values);
-            const currentUser = await getCurrentUser(sessionCookie);
+            const currentUser = await getCurrentUserClient();
             if (!currentUser) return;
 
-            const patientId = patients.find((patient) => patient.name === values.patientName)?.id;
+            const patientId = patients.find(
+              (patient) => patient.name === values.patientName
+            )?.id;
             if (!patientId) return;
 
             const newPrescription = {
-              doctorId: currentUser.id, 
-              patientId: patientId, 
-              drugName: values.drugName, 
-              description: values.description
+              doctorId: currentUser.id,
+              patientId: patientId,
+              drugName: values.drugName,
+              description: values.description,
             } as Omit<Prescription, "id">;
             await sendNewPrescription(newPrescription);
           })}
@@ -111,24 +123,30 @@ export default async function Page() {
               control={control}
               render={({ field, fieldState }) => (
                 <Autocomplete
-                  options={patients.map((patient) => patient.name)}
+                  options={filteredPatients.map((patient) => patient.name)}
                   sx={{ m: 1, width: 300 }}
                   renderInput={(params) => (
-                    <TextField 
-                      {...params} 
-                      label="Patient" 
+                    <TextField
+                      {...params}
+                      label="Patient"
                       error={!!fieldState.error}
-                      helperText={fieldState.error ? fieldState.error.message : ""}
+                      helperText={
+                        fieldState.error ? fieldState.error.message : ""
+                      }
                     />
                   )}
                   noOptionsText=""
-                  PaperComponent={({ children }) => 
-                    patients.length === 0 ? null : <Paper>{children}</Paper>
+                  PaperComponent={({ children }) =>
+                    filteredPatients.length === 0 ? null : (
+                      <Paper>{children}</Paper>
+                    )
                   }
                   onInputChange={(event, value) => {
-                    field.onChange(value)
-                    const newFilteredPatients = patients.filter((patient) => patient.name.startsWith(value))
-                    setFilteredPatients(newFilteredPatients)
+                    field.onChange(value);
+                    const newFilteredPatients = patients.filter((patient) =>
+                      patient.name.startsWith(value)
+                    );
+                    setFilteredPatients(newFilteredPatients);
 
                     if (newFilteredPatients.length === 0) {
                       setError("patientName", {
@@ -148,16 +166,20 @@ export default async function Page() {
                   options={drugSuggestions}
                   sx={{ m: 1, width: 300 }}
                   renderInput={(params) => (
-                    <TextField 
-                      {...params} 
-                      label="Drug" 
+                    <TextField
+                      {...params}
+                      label="Drug"
                       error={!!fieldState.error}
-                      helperText={fieldState.error ? fieldState.error.message : ""}
+                      helperText={
+                        fieldState.error ? fieldState.error.message : ""
+                      }
                     />
                   )}
                   noOptionsText=""
-                  PaperComponent={({ children }) => 
-                    drugSuggestions.length === 0 ? null : <Paper>{children}</Paper>
+                  PaperComponent={({ children }) =>
+                    drugSuggestions.length === 0 ? null : (
+                      <Paper>{children}</Paper>
+                    )
                   }
                   onInputChange={(event, value) => {
                     field.onChange(value);
