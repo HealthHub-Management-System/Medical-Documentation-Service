@@ -22,12 +22,12 @@ const sendNewPrescription = async (
     headers: {
       "Content-Type": "application/json",
       "patient-id": String(newReferral.patientId),
-      "doctor-id": String(newReferral.doctorId),
-    },
+        "doctor-id": String(newReferral.doctorId),
+      },
     body: JSON.stringify(camelToSnake(newReferral)),
   });
-
-  return res.ok;
+  console.log("dawdaw")
+  return res.ok;  
 };
 
 export default function Page() {

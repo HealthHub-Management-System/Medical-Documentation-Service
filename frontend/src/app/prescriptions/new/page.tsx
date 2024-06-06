@@ -21,7 +21,7 @@ const sendNewPrescription = async (
   userId: string,
   newPrescription: Omit<Prescription, "id">
 ) => {
-  const res = await fetch("http://localhost:8000/prescription", {
+  const res = await fetch("http://localhost:8003/prescription", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
