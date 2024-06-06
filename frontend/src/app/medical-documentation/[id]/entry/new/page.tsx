@@ -17,8 +17,7 @@ import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { Controller, useForm } from "react-hook-form";
 import dayjs from "dayjs";
-import { camelToSnake, getCurrentUser } from "@/src/utils/utils";
-import { cookies } from "next/headers";
+import { camelToSnake, getCurrentUserClient } from "@/src/utils/utils";
 
 const sendNewMedicalDocumentationEntry = async (
   userId: string,
@@ -53,10 +52,6 @@ export default function Page({ params }: MedicalDocumentationEntryNewProps) {
     },
   });
 
-  const cookieStore = cookies();
-  const sessionCookie = cookieStore.get("session");
-  if (!sessionCookie) return;
-
   return (
     <Container
       maxWidth="xl"
@@ -78,7 +73,7 @@ export default function Page({ params }: MedicalDocumentationEntryNewProps) {
           onSubmit={handleSubmit(async (values) => {
             const { date, ...valuesRest } = values;
 
-            const currentUser = await getCurrentUser(sessionCookie);
+            const currentUser = await getCurrentUserClient();
             await sendNewMedicalDocumentationEntry(currentUser.id, {
               date: date.format("DD-MM-YYYY"),
               ...valuesRest,
