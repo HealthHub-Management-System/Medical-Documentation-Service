@@ -17,16 +17,15 @@ const sendNewPrescription = async (
   userId: string,
   newReferral: Omit<Referral, "id">
 ) => {
-  const res = await fetch("http://localhost:8000/referral", {
+  const res = await fetch("http://localhost:8003/referral", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
       "patient-id": String(newReferral.patientId),
-        "doctor-id": String(newReferral.doctorId),
+      "doctor-id": String(newReferral.doctorId),
       },
     body: JSON.stringify(camelToSnake(newReferral)),
   });
-  console.log("dawdaw")
   return res.ok;  
 };
 
