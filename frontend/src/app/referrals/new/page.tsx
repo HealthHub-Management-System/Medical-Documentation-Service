@@ -1,3 +1,5 @@
+"use client";
+
 import {
   Autocomplete,
   Button,
@@ -10,10 +12,13 @@ import {
 } from "@mui/material";
 import { Controller, useForm } from "react-hook-form";
 import { NewReferralForm, Referral } from "@/src/models/referral";
-import { camelToSnake, getCurrentUser, listPatients } from "@/src/utils/utils";
-import { cookies } from "next/headers";
-import { useState } from "react";
+import {
+  camelToSnake,
+  getCurrentUserClient,
+  listPatients,
+} from "@/src/utils/utils";
 import { User } from "@/src/models/user";
+import { useState, useEffect } from "react";
 
 const sendNewReferral = async (
   newReferral: Omit<Referral, "id">
@@ -28,14 +33,17 @@ const sendNewReferral = async (
   return res.ok;  
 };
 
-export default async function Page() {
-  const { control, handleSubmit, setError } = useForm<NewReferralForm>({});
-  const patients = await listPatients();
+export default function Page() {
+  const { control, handleSubmit, setError } = useForm<NewReferralForm>();
+  const [patients, setPatients] = useState<User[]>([]);
   const [filteredPatients, setFilteredPatients] = useState<User[]>(patients);
 
-  const cookieStore = cookies();
-  const sessionCookie = cookieStore.get("session");
-  if (!sessionCookie) return;
+  useEffect(() => {
+    const fetchPatients = async () => {
+      setPatients(await listPatients());
+    };
+    fetchPatients();
+  }, []);
 
   return (
     <Container
@@ -54,10 +62,12 @@ export default async function Page() {
         <form
           onSubmit={handleSubmit(async (values) => {
             console.debug(values);
-            const currentUser = await getCurrentUser(sessionCookie);
+            const currentUser = await getCurrentUserClient();
             if (!currentUser) return;
 
-            const patient = patients.find((patient) => patient.name === values.patientName);
+            const patient = patients.find(
+              (patient) => patient.name === values.patientName
+            );
             if (!patient) return;
 
             const newReferral = {
@@ -85,21 +95,27 @@ export default async function Page() {
                   options={filteredPatients.map((patient) => patient.name)}
                   sx={{ m: 1, width: 300 }}
                   renderInput={(params) => (
-                    <TextField 
-                      {...params} 
-                      label="Patient" 
+                    <TextField
+                      {...params}
+                      label="Patient"
                       error={!!fieldState.error}
-                      helperText={fieldState.error ? fieldState.error.message : ""}
+                      helperText={
+                        fieldState.error ? fieldState.error.message : ""
+                      }
                     />
                   )}
                   noOptionsText=""
-                  PaperComponent={({ children }) => 
-                    filteredPatients.length === 0 ? null : <Paper>{children}</Paper>
+                  PaperComponent={({ children }) =>
+                    filteredPatients.length === 0 ? null : (
+                      <Paper>{children}</Paper>
+                    )
                   }
-                  onInputChange={(event, value) => {
-                    field.onChange(value)
-                    const newFilteredPatients = patients.filter((patient) => patient.name.startsWith(value))
-                    setFilteredPatients(newFilteredPatients)
+                  onInputChange={(_, value) => {
+                    field.onChange(value);
+                    const newFilteredPatients = patients.filter((patient) =>
+                      patient.name.startsWith(value)
+                    );
+                    setFilteredPatients(newFilteredPatients);
 
                     if (newFilteredPatients.length === 0) {
                       setError("patientName", {
