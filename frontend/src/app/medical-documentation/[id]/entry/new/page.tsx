@@ -20,7 +20,7 @@ import dayjs from "dayjs";
 import { camelToSnake, getCurrentUserClient } from "@/src/utils/utils";
 
 const sendNewMedicalDocumentationEntry = async (
-  userId: string,
+  medicalDocumentationId: number,
   newEntry: Omit<MedicalDocumentationEntry, "id">
 ) => {
   const res = await fetch(
@@ -29,6 +29,7 @@ const sendNewMedicalDocumentationEntry = async (
       method: "POST",
       headers: {
         "Content-Type": "application/json",
+        "medical-documentation-id": String(medicalDocumentationId),
       },
       body: JSON.stringify(camelToSnake(newEntry)),
     }
@@ -39,14 +40,14 @@ const sendNewMedicalDocumentationEntry = async (
 
 type MedicalDocumentationEntryNewProps = {
   params: {
-    id: number;
+    id: string;
   };
 };
 
 export default function Page({ params }: MedicalDocumentationEntryNewProps) {
   const { control, handleSubmit } = useForm<NewMedicalDocumentationEntryForm>({
     defaultValues: {
-      medicalDocumentationId: params.id,
+      medicalDocumentationId: Number(params.id),
       date: dayjs(),
     },
   });
@@ -72,11 +73,15 @@ export default function Page({ params }: MedicalDocumentationEntryNewProps) {
           onSubmit={handleSubmit(async (values) => {
             const { date, ...valuesRest } = values;
 
-            const currentUser = await getCurrentUserClient();
-            await sendNewMedicalDocumentationEntry(currentUser.id, {
-              date: date.format("DD-MM-YYYY"),
-              ...valuesRest,
-            });
+            console.debug(values);
+
+            await sendNewMedicalDocumentationEntry(
+              values.medicalDocumentationId,
+              {
+                date: date.format("DD-MM-YYYY"),
+                ...valuesRest,
+              }
+            );
           })}
         >
           <CardContent

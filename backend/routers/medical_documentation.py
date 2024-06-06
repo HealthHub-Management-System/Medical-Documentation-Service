@@ -32,7 +32,11 @@ async def get_medical_documentation(user_id: str = Query(None), db: Session = De
         .options(joinedload(models.MedicalDocumentation.medical_documentation_entries))\
         .first()
     if medical_documentation is None:
-        raise HTTPException(status_code=404, detail="User not found")
+        medical_documentation =  await create_medical_documentation_if_not_exists(db, user_id)
+        medical_documentation = db.query(models.MedicalDocumentation)\
+        .filter(models.MedicalDocumentation.patient_id == user_id)\
+        .options(joinedload(models.MedicalDocumentation.medical_documentation_entries))\
+        .first()
     return medical_documentation
     
 
@@ -44,9 +48,8 @@ async def get_medical_documentation(medical_documentation_entry_id: int, db: Ses
     return medical_documentation
 
 @router.post("/medical-documentations/medical-documentation-entries")
-async def create_medical_documentation_entry(medical_documentation_entry: schemas.MedicalDocumentationEntry, user_id:str = Header(None), db: Session = Depends(get_db)):
-    medical_documentation =  await create_medical_documentation_if_not_exists(db, user_id)
-    entry = models.MedicalDocumentationEntry(**medical_documentation_entry.model_dump(), medical_documentation_id=medical_documentation.id)
+async def create_medical_documentation_entry(medical_documentation_entry: schemas.MedicalDocumentationEntry, medical_documentation_id: str = Header(None), db: Session = Depends(get_db)):
+    entry = models.MedicalDocumentationEntry(**medical_documentation_entry.model_dump(), medical_documentation_id=medical_documentation_id)
     db.add(entry)
     db.commit()
     return entry   

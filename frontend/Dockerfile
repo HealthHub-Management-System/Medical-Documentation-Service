@@ -9,5 +9,4 @@ RUN npm install
 
 COPY . .
 
-CMD ["next", "build", "&&", "next", "start"]
-
+ENTRYPOINT ["./entrypoint.sh"]
