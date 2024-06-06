@@ -8,7 +8,7 @@ import { cookies } from "next/headers";
 
 const getReferrals = async (patientId: string) => {
   const res = await fetch(
-    `http://localhost:8000/referrals?` +
+    `http://backend:8000/referrals?` +
       new URLSearchParams({
         patient_id: patientId,
       }),
