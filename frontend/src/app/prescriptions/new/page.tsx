@@ -24,7 +24,7 @@ import { User } from "@/src/models/user";
 const sendNewPrescription = async (
   newPrescription: Omit<Prescription, "id">
 ) => {
-  const res = await fetch("http://localhost:8003/prescription", {
+  const res = await fetch("http://localhost:8000/prescriptions", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -94,7 +94,7 @@ export default function Page() {
           onSubmit={handleSubmit(async (values) => {
             console.debug(values);
             const currentUser = await getCurrentUserClient();
-            if (!currentUser) return;
+            if (!currentUser || currentUser.role !== "doctor") return;
 
             const patientId = patients.find(
               (patient) => patient.name === values.patientName

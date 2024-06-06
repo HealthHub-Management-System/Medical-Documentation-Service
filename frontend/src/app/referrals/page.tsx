@@ -1,14 +1,17 @@
+"use client";
+
 import { mockReferrals } from "@/src/mocks/mockReferrals";
-import { getCurrentUser, snakeToCamel } from "@/src/utils/utils";
+import { getCurrentUserClient, snakeToCamel } from "@/src/utils/utils";
 import { Container, Typography } from "@mui/material";
 import ReferralCard from "./ReferralCard";
 import { Referral } from "@/src/models/referral";
 import { LinkButton } from "../components/LinkButton";
-import { cookies } from "next/headers";
+import { useEffect, useState } from "react";
+import { User } from "@/src/models/user";
 
 const getReferrals = async (patientId: string) => {
   const res = await fetch(
-    `http://backend:8000/referrals?` +
+    `http://localhost:8000/referrals?` +
       new URLSearchParams({
         patient_id: patientId,
       }),
@@ -26,12 +29,58 @@ const getReferrals = async (patientId: string) => {
   );
 };
 
-export default async function Page() {
-  const cookieStore = cookies();
-  const sessionCookie = cookieStore.get("session");
-  if (!sessionCookie) return;
-  const currentUser = await getCurrentUser(sessionCookie);
-  const referrals = await getReferrals(currentUser.id);
+export default function Page() {
+  const [currentUser, setCurrentUser] = useState<User | null>(null);
+  useEffect(() => {
+    getCurrentUserClient().then((u) => setCurrentUser(u));
+  }, []);
+
+  const [referrals, setReferrals] = useState<Referral[]>([]);
+  useEffect(() => {
+    if (!currentUser) return;
+    getReferrals(currentUser.id).then((r) => setReferrals(r));
+  }, [currentUser]);
+
+  if (!currentUser) return null;
+
+  if (currentUser.role === "patient") {
+    return (
+      <Container
+        maxWidth="xl"
+        sx={{
+          display: "flex",
+          flexDirection: "column",
+          justifyContent: "center",
+          alignItems: "center",
+        }}
+      >
+        <Typography variant="h4">
+          Referrals for user {currentUser.name}
+        </Typography>
+        {referrals.map((referral) => {
+          return <ReferralCard key={referral.id} referral={referral} />;
+        })}
+      </Container>
+    );
+  }
+
+  if (currentUser.role === "doctor") {
+    return (
+      <Container
+        maxWidth="xl"
+        sx={{
+          display: "flex",
+          flexDirection: "column",
+          justifyContent: "center",
+          alignItems: "center",
+        }}
+      >
+        <LinkButton linkProps={{ href: `/referrals/new` }}>
+          Add new referral
+        </LinkButton>
+      </Container>
+    );
+  }
 
   return (
     <Container
@@ -41,7 +90,6 @@ export default async function Page() {
         flexDirection: "column",
         justifyContent: "center",
         alignItems: "center",
-        height: "100vh",
       }}
     >
       <Typography variant="h4">

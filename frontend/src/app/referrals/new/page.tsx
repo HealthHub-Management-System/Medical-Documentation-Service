@@ -20,17 +20,15 @@ import {
 import { User } from "@/src/models/user";
 import { useState, useEffect } from "react";
 
-const sendNewReferral = async (
-  newReferral: Omit<Referral, "id">
-) => {
-  const res = await fetch("http://localhost:8003/referral", {
+const sendNewReferral = async (newReferral: Omit<Referral, "id">) => {
+  const res = await fetch("http://localhost:8000/referrals", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
     },
     body: JSON.stringify(camelToSnake(newReferral)),
   });
-  return res.ok;  
+  return res.ok;
 };
 
 export default function Page() {
@@ -63,7 +61,7 @@ export default function Page() {
           onSubmit={handleSubmit(async (values) => {
             console.debug(values);
             const currentUser = await getCurrentUserClient();
-            if (!currentUser) return;
+            if (!currentUser || currentUser.role !== "doctor") return;
 
             const patient = patients.find(
               (patient) => patient.name === values.patientName

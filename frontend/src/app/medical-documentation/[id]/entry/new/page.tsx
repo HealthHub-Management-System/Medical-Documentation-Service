@@ -24,12 +24,11 @@ const sendNewMedicalDocumentationEntry = async (
   newEntry: Omit<MedicalDocumentationEntry, "id">
 ) => {
   const res = await fetch(
-    "http://localhost:8003/medical_documentation/medical_documentation_entry",
+    "http://localhost:8000/medical-documentations/medical-documentation-entries",
     {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        "user-id": userId,
       },
       body: JSON.stringify(camelToSnake(newEntry)),
     }

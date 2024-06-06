@@ -1,16 +1,19 @@
+"use client";
+
 import { mockMedicalDocumentations } from "@/src/mocks/mockMedicalDocumentations";
 import { Container, Typography } from "@mui/material";
 import { MedicalDocumentationEntryCard } from "./MedicalDocumentationEntryCard";
-import { getCurrentUser, snakeToCamel } from "@/src/utils/utils";
+import { getCurrentUserClient, snakeToCamel } from "@/src/utils/utils";
 import { MedicalDocumentation } from "@/src/models/medicalDocumentation";
 import { LinkButton } from "../components/LinkButton";
-import { cookies } from "next/headers";
+import { User } from "@/src/models/user";
+import { useState, useEffect } from "react";
 
 const getMedicalDocumentation = async (patientId: string) => {
   const res = await fetch(
-    `http://localhost:8000/medical_documentation?` +
+    `http://localhost:8000/medical-documentations?` +
       new URLSearchParams({
-        user_id: String(patientId),
+        user_id: patientId,
       }),
     {
       method: "GET",
@@ -36,12 +39,22 @@ const getMedicalDocumentation = async (patientId: string) => {
 //   };
 // };
 
-export default async function Page() {
-  const cookieStore = cookies();
-  const sessionCookie = cookieStore.get("session");
-  if (!sessionCookie) return;
-  const user = await getCurrentUser(sessionCookie);
-  const medicalDocumentation = await getMedicalDocumentation(user.id);
+export default function Page() {
+  const [currentUser, setCurrentUser] = useState<User | null>(null);
+  useEffect(() => {
+    getCurrentUserClient().then((u) => setCurrentUser(u));
+  }, []);
+
+  const [medicalDocumentation, setMedicalDocumentation] =
+    useState<MedicalDocumentation | null>(null);
+  useEffect(() => {
+    if (!currentUser) return;
+    getMedicalDocumentation(currentUser.id).then((r) =>
+      setMedicalDocumentation(r)
+    );
+  }, [currentUser]);
+
+  if (!currentUser) return null;
 
   if (!medicalDocumentation)
     return (
@@ -55,7 +68,7 @@ export default async function Page() {
         }}
       >
         <Typography variant="h4">
-          Medical documentation not found for user {user.name}
+          Medical documentation not found for user {currentUser.name}
         </Typography>
       </Container>
     );
@@ -72,7 +85,7 @@ export default async function Page() {
       }}
     >
       <Typography variant="h4">
-        Medical documentation for user {user.name}
+        Medical documentation for user {currentUser.name}
       </Typography>
 
       {medicalDocumentation.medicalDocumentationEntries.map((entry) => {
