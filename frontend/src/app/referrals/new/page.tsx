@@ -21,7 +21,7 @@ import { User } from "@/src/models/user";
 import { useState, useEffect } from "react";
 
 const sendNewReferral = async (newReferral: Omit<Referral, "id">) => {
-  const res = await fetch("http://localhost:8000/referrals", {
+  const res = await fetch("http://localhost:6969/referrals", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",

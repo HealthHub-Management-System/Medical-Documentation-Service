@@ -24,7 +24,7 @@ const sendNewMedicalDocumentationEntry = async (
   newEntry: Omit<MedicalDocumentationEntry, "id">
 ) => {
   const res = await fetch(
-    "http://localhost:8000/medical-documentations/medical-documentation-entries",
+    "http://localhost:6969/medical-documentations/medical-documentation-entries",
     {
       method: "POST",
       headers: {
