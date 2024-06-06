@@ -7,7 +7,7 @@ class Prescription(Base):
     __tablename__ = "prescriptions"
 
     id = Column(Integer, primary_key=True, index=True)
-    doctor_id = Column(String, ForeignKey("doctors.id"))
-    patient_id = Column(String, ForeignKey("users.id"))
+    doctor_id = Column(String)
+    patient_id = Column(String)
     drug_id = Column(Integer, ForeignKey("drugs.id"))
     description = Column(String)

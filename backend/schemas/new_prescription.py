@@ -1,6 +1,4 @@
 from pydantic import BaseModel
-from .user import User
-from .doctor import Doctor
 
 
 class NewPrescription(BaseModel):
@@ -13,8 +11,8 @@ class NewPrescription(BaseModel):
         description: Descritpion for a prescription (quantity, dosage, etc.).
     """
 
-    patient_id: int
-    doctor_id: int
+    patient_id: str
+    doctor_id: str
     drug_name: str
     description: str
 

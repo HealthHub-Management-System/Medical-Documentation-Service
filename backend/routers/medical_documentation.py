@@ -14,7 +14,7 @@ def get_db():
     finally:
         db.close()
 
-async def create_medical_documentation_if_not_exists(db: Session, user_id: int) -> models.MedicalDocumentation:
+async def create_medical_documentation_if_not_exists(db: Session, user_id: str) -> models.MedicalDocumentation:
     medical_documentation = db.query(models.MedicalDocumentation).filter(models.MedicalDocumentation.patient_id == user_id).first()
     if medical_documentation is None:
         medical_documentation = models.MedicalDocumentation(patient_id=user_id)
@@ -41,7 +41,7 @@ async def get_medical_documentation(medical_documentation_entry_id: int, db: Ses
     return medical_documentation
 
 @router.post("/medical-documentations/medical-documentation-entries")
-async def create_medical_documentation_entry(medical_documentation_entry: schemas.MedicalDocumentationEntry, user_id:int = Header(None), db: Session = Depends(get_db)):
+async def create_medical_documentation_entry(medical_documentation_entry: schemas.MedicalDocumentationEntry, user_id:str = Header(None), db: Session = Depends(get_db)):
     medical_documentation =  await create_medical_documentation_if_not_exists(db, user_id)
     entry = models.MedicalDocumentationEntry(**medical_documentation_entry.model_dump(), medical_documentation_id=medical_documentation.id)
     db.add(entry)
