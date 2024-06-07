@@ -6,7 +6,6 @@ COPY package.json .
 
 RUN npm install
 
-
 COPY . .
 
-ENTRYPOINT ["./entrypoint.sh"]
+CMD npm run build && npm run start

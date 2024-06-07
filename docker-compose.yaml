@@ -2,32 +2,25 @@ version: '3'
 
 
 services:
-  backend:
+  backend-medical-documentation-service:
     build: ./backend
-    volumes:
-      - ./backend:/app
     ports:
       - 6969:8000
     env_file:
       - .env
     depends_on:
-      - postgres
+      - postgres-medical-documentation-service
 
-  postgres:
+  postgres-medical-documentation-service:
     image: postgres:16-bullseye
     env_file:
       - .env
     ports:
       - 5433:5432
 
-  frontend:
+  frontend-medical-documentation-service:
     build: ./frontend
-    volumes:
-      - ./frontend:/app
-      - /app/node_modules
     ports:
       - 2137:3000
     depends_on:
-      - backend
-    links:
-      - backend
+      - backend-medical-documentation-service
