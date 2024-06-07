@@ -1,13 +1,14 @@
 "use client";
 
 import { mockPrescriptions } from "@/src/mocks/mockPrescriptions";
-import { getCurrentUserClient, snakeToCamel } from "@/src/utils/utils";
-import { Container, Typography } from "@mui/material";
+import { getCurrentUserClient, listPatients, snakeToCamel } from "@/src/utils/utils";
+import { Container, Typography, Card, CardContent, Paper, TextField, Autocomplete, Button } from "@mui/material";
 import { PrescriptionCard } from "./PrescriptionCard";
 import { Prescription } from "@/src/models/prescription";
 import { LinkButton } from "../components/LinkButton";
 import { User } from "@/src/models/user";
 import { useState, useEffect } from "react";
+import { Controller, useForm } from "react-hook-form";
 
 const getPrescriptions = async (patientId: string) => {
   const res = await fetch(
@@ -38,10 +39,24 @@ export default function Page() {
   }, []);
 
   const [prescriptions, setPrescriptions] = useState<Prescription[]>([]);
+  const [patients, setPatients] = useState<User[]>([]);
+  const [filteredPatients, setFilteredPatients] = useState<User[]>(patients);
+  const [selectedPatient, setSelectedPatient] = useState<User | null>(null);
+  useEffect(() => {
+    listPatients().then((p) => {
+      setPatients(p);
+      setFilteredPatients(p);
+    }
+    );
+  }, []);
   useEffect(() => {
     if (!currentUser) return;
     getPrescriptions(currentUser.id).then((r) => setPrescriptions(r));
   }, [currentUser]);
+
+  const {handleSubmit, control, setError } = useForm<{
+    patientName: String;
+  }>();
 
   if (!currentUser) return null;
 
@@ -82,9 +97,92 @@ export default function Page() {
           alignItems: "center",
         }}
       >
+         <Card>
+          <form
+            onSubmit={handleSubmit(async ({ patientName }) => {
+              const patient = patients.find(
+                (patient) => patient.name === patientName
+              );
+              if (!patient) return;
+
+              const referals = await getPrescriptions(
+                patient.id
+              );
+              setSelectedPatient(patient);
+              setPrescriptions(referals);
+            })}
+          >
+            <CardContent
+              sx={{
+                display: "flex",
+                flexDirection: "column",
+                justifyContent: "center",
+                alignItems: "center",
+              }}
+            >
+              <Controller
+                name="patientName"
+                control={control}
+                render={({ field, fieldState }) => (
+                  <Autocomplete
+                    options={filteredPatients.map((patient) => patient.name)}
+                    sx={{ m: 1, width: 300 }}
+                    renderInput={(params) => (
+                      <TextField
+                        {...params}
+                        label="Patient"
+                        error={!!fieldState.error}
+                        helperText={
+                          fieldState.error ? fieldState.error.message : ""
+                        }
+                      />
+                    )}
+                    noOptionsText=""
+                    PaperComponent={({ children }) =>
+                      filteredPatients.length === 0 ? null : (
+                        <Paper>{children}</Paper>
+                      )
+                    }
+                    onInputChange={(_, value) => {
+                      field.onChange(value);
+                      const newFilteredPatients = patients.filter((patient) =>
+                        patient.name.startsWith(value)
+                      );
+                      setFilteredPatients(newFilteredPatients);
+
+                      if (newFilteredPatients.length === 0) {
+                        setError("patientName", {
+                          type: "manual",
+                          message: "Patient not found",
+                        });
+                      }
+                    }}
+                  />
+                )}
+              />
+              <Button variant="contained" type="submit" sx={{ m: 1 }}>
+                Select patient
+              </Button>
+            </CardContent>
+          </form>
+        </Card>
+        {prescriptions && selectedPatient && (
+          <>
+          <Typography variant="h4">
+            Prescriptions for user {selectedPatient.name}
+          </Typography>
+        {prescriptions.map((prescription) => {
+          return (
+            <PrescriptionCard
+              key={prescription.id}
+              prescription={prescription}
+            />
+          );
+        })}
         <LinkButton linkProps={{ href: `/prescriptions/new` }}>
           Add new prescription
         </LinkButton>
+        </>)}
       </Container>
     );
   }
