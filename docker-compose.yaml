@@ -9,9 +9,9 @@ services:
     env_file:
       - .env
     depends_on:
-      - postgres-medical-documentation-service
+      - postgres
 
-  postgres-medical-documentation-service:
+  postgres:
     image: postgres:16-bullseye
     env_file:
       - .env
